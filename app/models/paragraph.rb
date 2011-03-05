@@ -47,7 +47,7 @@ class Paragraph < ActiveRecord::Base
     new_parent_id = higher_item.id
     remove_from_list
     update_attribute(:parent_id, new_parent_id)
-    insert_at
+    send(:assume_bottom_position)
   end
   
   def can_outdent?

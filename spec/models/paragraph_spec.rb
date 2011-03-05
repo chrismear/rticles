@@ -148,6 +148,12 @@ describe Paragraph do
       @document.top_level_paragraphs[1].indent!
       @document.reload.outline.should == ['one', ['two']]
     end
+    
+    it "goes at the bottom of the previous sibling's children" do
+      stub_outline([:one, [:sub_one, :sub_two], :two])
+      @document.top_level_paragraphs[1].indent!
+      @document.reload.outline.should == ['one', ['sub_one', 'sub_two', 'two']]
+    end
   end
   
   describe "outdenting" do

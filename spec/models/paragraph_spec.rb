@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Paragraph do
+  include DocumentMacros
+  
   describe "top-level positioning" do
     before(:each) do
       @document = Document.create
@@ -137,6 +139,28 @@ describe Paragraph do
       @document.paragraphs.count.should == 4
       @document.reload.top_level_paragraphs.first.destroy
       @document.reload.paragraphs.count.should == 0
+    end
+  end
+  
+  describe "indenting" do
+    it "makes the paragraph a child of its previous sibling" do
+      stub_outline([:one, :two])
+      @document.top_level_paragraphs[1].indent!
+      @document.reload.outline.should == ['one', ['two']]
+    end
+  end
+  
+  describe "outdenting" do
+    it "inserts itself back into its parent's level" do
+      stub_outline([:one, [:two]])
+      @document.top_level_paragraphs[0].children[0].outdent!
+      @document.reload.outline.should == ['one', 'two']
+    end
+    
+    it "splits its siblings" do
+      stub_outline [:one, [:sub_one, :sub_two, :sub_three], :two]
+      @document.top_level_paragraphs[0].children[1].outdent!
+      @document.reload.outline.should == ['one', ['sub_one'], 'sub_two', ['sub_three'], 'two']
     end
   end
 end

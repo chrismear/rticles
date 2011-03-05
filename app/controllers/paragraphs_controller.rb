@@ -1,5 +1,6 @@
 class ParagraphsController < ApplicationController
   before_filter :find_document
+  before_filter :find_paragraph, :only => [:edit, :update, :destroy, :indent, :outdent]
   
   def index
     redirect_to document_path(@document)
@@ -23,11 +24,9 @@ class ParagraphsController < ApplicationController
   end
   
   def edit
-    @paragraph = @document.paragraphs.find(params[:id])
   end
   
   def update
-    @paragraph = @document.paragraphs.find(params[:id])
     if @paragraph.update_attributes(params[:paragraph])
       redirect_to document_path(@document), :notice => "Paragraph updated."
     else
@@ -37,14 +36,27 @@ class ParagraphsController < ApplicationController
   end
   
   def destroy
-    @paragraph = @document.paragraphs.find(params[:id])
     @paragraph.destroy
     redirect_to document_path(@document), :notice => "Paragraph deleted."
+  end
+  
+  def indent
+    @paragraph.indent!
+    redirect_to document_path(@document)
+  end
+  
+  def outdent
+    @paragraph.outdent!
+    redirect_to document_path(@document)
   end
   
 private
   
   def find_document
     @document = Document.find(params[:document_id])
+  end
+  
+  def find_paragraph
+    @paragraph = @document.paragraphs.find(params[:id])
   end
 end

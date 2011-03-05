@@ -37,4 +37,44 @@ class Paragraph < ActiveRecord::Base
     nodes.push(node = node.parent) while node.parent
     nodes
   end
+  
+  def can_indent?
+    !!higher_item
+  end
+  
+  def indent!
+    return unless can_indent?
+    new_parent_id = higher_item.id
+    remove_from_list
+    update_attribute(:parent_id, new_parent_id)
+    insert_at
+  end
+  
+  def can_outdent?
+    !!parent_id
+  end
+  
+  def outdent!
+    return unless can_outdent?
+    new_parent_id = parent.parent_id
+    new_position = parent.position + 1
+    reparent_lower_items_under_self
+    remove_from_list
+    update_attribute(:parent_id, new_parent_id)
+    insert_at(new_position)
+  end
+  
+  def lower_items
+    return nil unless in_list?
+    acts_as_list_class.where(
+      "#{scope_condition} AND #{position_column} > #{(send(position_column).to_i).to_s}"
+    )
+  end
+  
+  def reparent_lower_items_under_self
+    return unless in_list?
+    acts_as_list_class.update_all(
+      "#{position_column} = (#{position_column} - #{position}), parent_id = #{id}", "#{scope_condition} AND #{position_column} > #{send(position_column).to_i}"
+    )
+  end
 end

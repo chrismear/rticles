@@ -1,0 +1,13 @@
+ol {
+  list-style-type: none; }
+
+.control {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 0.8em; }
+
+p.flash {
+  color: white; }
+  p.flash.notice {
+    background-color: green; }
+  p.flash.alert {
+    background-color: red; }

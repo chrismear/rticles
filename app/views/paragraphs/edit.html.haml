@@ -1,0 +1,12 @@
+%h1 Edit paragraph
+= form_for [@document, @paragraph] do |f|
+  %p
+    = f.label :body, "Paragraph body"
+  %p
+    = f.text_area :body
+  = f.hidden_field :before_id
+  = f.hidden_field :after_id
+  %p
+    = f.submit "Save"
+%p
+  = link_to "Cancel and go back.", document_path(@document)

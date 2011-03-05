@@ -1,0 +1,9 @@
+%h1 New document
+= form_for @document do |f|
+  %p
+    = f.label :title
+    = f.text_field :title
+  %p
+    = f.submit "Create"
+%p
+  = link_to "Cancel and go back.", documents_path

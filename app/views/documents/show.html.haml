@@ -1,0 +1,4 @@
+%h1= @document.title
+%ol
+  - @document.top_level_paragraphs.each do |paragraph|
+    = render paragraph

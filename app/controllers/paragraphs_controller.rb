@@ -1,6 +1,6 @@
 class ParagraphsController < ApplicationController
   before_filter :find_document
-  before_filter :find_paragraph, :only => [:edit, :update, :destroy, :indent, :outdent]
+  before_filter :find_paragraph, :only => [:edit, :update, :destroy, :indent, :outdent, :move_higher, :move_lower]
   
   def index
     redirect_to document_path(@document)
@@ -48,6 +48,16 @@ class ParagraphsController < ApplicationController
   
   def outdent
     @paragraph.outdent!
+    redirect_to document_path(@document)
+  end
+  
+  def move_lower
+    @paragraph.move_lower
+    redirect_to document_path(@document)
+  end
+  
+  def move_higher
+    @paragraph.move_higher
     redirect_to document_path(@document)
   end
   

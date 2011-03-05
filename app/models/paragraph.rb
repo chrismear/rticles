@@ -38,6 +38,14 @@ class Paragraph < ActiveRecord::Base
     nodes
   end
   
+  def can_move_lower?
+    !!lower_item
+  end
+  
+  def can_move_higher?
+    !!higher_item
+  end
+  
   def can_indent?
     !!higher_item
   end

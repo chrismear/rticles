@@ -24,6 +24,7 @@ class ParagraphsController < ApplicationController
   end
   
   def edit
+    @paragraph.prepare_for_editing
   end
   
   def update

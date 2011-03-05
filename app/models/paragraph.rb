@@ -80,18 +80,27 @@ class Paragraph < ActiveRecord::Base
   
   before_save :normalise_references
   def normalise_references
-    raw_reference_re = /(\d\.)*\d/
+    return if body.blank?
+    raw_reference_re = /!(\d\.)*\d/
     Rails.logger.debug("Body: #{body}")
     self.body = body.gsub(raw_reference_re) do |match|
-      '#rticles#' + document.paragraph_for_reference(match).id.to_s
+      raw_reference = match.sub('!', '')
+      '#rticles#' + document.paragraph_for_reference(raw_reference).id.to_s
     end
   end
   
-  def body_with_resolved_references
+  def body_with_resolved_references(with_meta_characters=false)
+    return body if body.blank?
     normalised_reference_re = /#rticles#(\d+)/
     body.gsub(normalised_reference_re) do |match|
       normalised_reference = match.sub('#rticles#', '')
-      document.paragraphs.find(normalised_reference).full_index
+      result = with_meta_characters ? '!' : ''
+      result += document.paragraphs.find(normalised_reference).full_index
+      result
     end
+  end
+  
+  def prepare_for_editing
+    self.body = body_with_resolved_references(true)
   end
 end

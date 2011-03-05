@@ -25,3 +25,9 @@ Rticles is licensed under the [GNU Affero General Public License, Version 3](htt
 
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+Rticles incorporates work covered by the following copyright and permission notice:
+
+    acts_as_list
+    
+    Copyright (c) 2007 David Heinemeier Hansson, released under the MIT license

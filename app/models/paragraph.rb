@@ -77,4 +77,21 @@ class Paragraph < ActiveRecord::Base
       "#{position_column} = (#{position_column} - #{position}), parent_id = #{id}", "#{scope_condition} AND #{position_column} > #{send(position_column).to_i}"
     )
   end
+  
+  before_save :normalise_references
+  def normalise_references
+    raw_reference_re = /(\d\.)*\d/
+    Rails.logger.debug("Body: #{body}")
+    self.body = body.gsub(raw_reference_re) do |match|
+      '#rticles#' + document.paragraph_for_reference(match).id.to_s
+    end
+  end
+  
+  def body_with_resolved_references
+    normalised_reference_re = /#rticles#(\d+)/
+    body.gsub(normalised_reference_re) do |match|
+      normalised_reference = match.sub('#rticles#', '')
+      document.paragraphs.find(normalised_reference).full_index
+    end
+  end
 end

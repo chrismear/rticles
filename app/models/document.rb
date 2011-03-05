@@ -13,6 +13,12 @@ class Document < ActiveRecord::Base
     o
   end
   
+  def paragraph_for_reference(raw_reference)
+    # TODO optimise
+    Rails.logger.debug("Finding raw reference: #{raw_reference}")
+    paragraphs.all.detect{|p| p.full_index == raw_reference}
+  end
+  
 protected
   
   def sub_outline(p)

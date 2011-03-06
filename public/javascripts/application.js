@@ -8,9 +8,21 @@ $(document).ready(function () {
     $(event.target).parent('.control').hide();
   });
   
-  $('a.cancel').click(function (event) {
+  $('.insert_paragraph_form a.cancel').click(function (event) {
     event.preventDefault();
     $(event.target).parents('.insert_paragraph_form').hide('fast');
     $(event.target).parents('.insert_paragraph_form').siblings('.control').show();
+  });
+  
+  $('a.edit_paragraph').click(function (event) {
+    event.preventDefault();
+    $(event.target).closest('.paragraph_wrapper').hide();
+    $(event.target).closest('li.paragraph').children('.edit_paragraph_form').show('fast');
+  });
+  
+  $('.edit_paragraph_form a.cancel').click(function (event) {
+    event.preventDefault();
+    $(event.target).closest('.edit_paragraph_form').hide('fast');
+    $(event.target).closest('.edit_paragraph_form').siblings('.paragraph_wrapper').show();
   });
 });

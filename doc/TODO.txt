@@ -1,0 +1,17 @@
+a
+|-1
+|-2
+|-3
+
+Outdenting then indenting '2' results in:
+
+a
+|-1
+|-2
+  |-3
+
+when it should result in the original outline.
+
+Need headings and subheadings.
+
+AJAX for outline editing actions (indenting, outdenting, moving up and down, deleting)?

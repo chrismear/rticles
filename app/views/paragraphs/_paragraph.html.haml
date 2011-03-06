@@ -1,5 +1,9 @@
 %li.control
-  = link_to "Insert paragraph", new_document_paragraph_path(:document_id => paragraph.document, :before_id => paragraph.id)
+  %p.control
+    = link_to "Insert paragraph", new_document_paragraph_path(:document_id => paragraph.document, :before_id => paragraph.id), :class => 'insert_paragraph'
+  .insert_paragraph_form{:style => "display: none;"}
+    = form_for [paragraph.document, Paragraph.new(:before_id => paragraph.id)] do |f|
+      = render(:partial => 'paragraphs/form', :locals => {:f => f, :cancel_link => true})
 = content_tag_for(:li, paragraph) do
   = simple_format(paragraph.full_index + ' ' + paragraph.body_with_resolved_references)
   %p.control
@@ -15,4 +19,8 @@
         = render sub_paragraph
 - if paragraph.last?
   %li.control
-    = link_to "Insert paragraph", new_document_paragraph_path(:document_id => paragraph.document, :after_id => paragraph.id)
+    %p.control
+      = link_to "Insert paragraph", new_document_paragraph_path(:document_id => paragraph.document, :after_id => paragraph.id), :class => 'insert_paragraph'
+    .insert_paragraph_form{:style => "display: none;"}
+      = form_for [paragraph.document, Paragraph.new(:after_id => paragraph.id)] do |f|
+        = render(:partial => 'paragraphs/form', :locals => {:f => f, :cancel_link => true})

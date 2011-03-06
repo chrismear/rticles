@@ -2,13 +2,6 @@
 %p
   To insert a reference, add an exclamation mark before the paragraph number: !4.2
 = form_for [@document, @paragraph] do |f|
-  %p
-    = f.label :body, "Paragraph body"
-  %p
-    = f.text_area :body
-  = f.hidden_field :before_id
-  = f.hidden_field :after_id
-  %p
-    = f.submit "Save"
+  = render :partial => 'form', :locals => {:f => f}
 %p
   = link_to "Cancel and go back.", document_path(@document)

@@ -1,0 +1,8 @@
+%p
+  = f.text_area :body
+= f.hidden_field :before_id
+= f.hidden_field :after_id
+%p
+  = f.submit "Save"
+  - if defined?(:cancel_link) && cancel_link
+    = link_to("Cancel", documents_path, :class => 'cancel')

@@ -1,9 +1,26 @@
+*, html, body {
+  margin: 0;
+  padding: 0; }
+
+body {
+  padding: 1em; }
+
+p {
+  margin: 0 0 1em; }
+
 ol {
   list-style-type: none; }
 
+li {
+  margin-left: 2em; }
+  li.control {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em; }
+
 .control {
   font-family: Helvetica, Arial, sans-serif;
-  font-size: 0.8em; }
+  font-size: 0.8em;
+  color: gray; }
 
 p.flash {
   color: white; }
@@ -11,3 +28,7 @@ p.flash {
     background-color: green; }
   p.flash.alert {
     background-color: red; }
+
+li.paragraph {
+  border: 1px solid gray;
+  padding: 0.5em; }

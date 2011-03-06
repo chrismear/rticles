@@ -2,3 +2,9 @@
 %ol
   - @document.top_level_paragraphs.each do |paragraph|
     = render paragraph
+- if @document.top_level_paragraphs.empty?
+  %p.control
+    = link_to "Insert paragraph", new_document_paragraph_path(:document_id => @document)
+
+%p
+  = link_to "Back to documents list.", documents_path

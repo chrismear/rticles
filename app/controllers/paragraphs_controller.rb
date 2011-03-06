@@ -16,7 +16,7 @@ class ParagraphsController < ApplicationController
   def create
     @paragraph = @document.paragraphs.build(params[:paragraph])
     if @paragraph.save
-      redirect_to document_path(@document), :notice => "Paragraph added."
+      redirect_to document_path(@document, :anchor => dom_id(@paragraph)), :notice => "Paragraph added."
     else
       flash.now[:alert] = "There was a problem saving the new paragraph."
       render :action => :new
@@ -29,7 +29,7 @@ class ParagraphsController < ApplicationController
   
   def update
     if @paragraph.update_attributes(params[:paragraph])
-      redirect_to document_path(@document), :notice => "Paragraph updated."
+      redirect_to document_path(@document, :anchor => dom_id(@paragraph)), :notice => "Paragraph updated."
     else
       flash.now[:alert] = "There was a problem updating the paragraph."
       render :action => :edit
@@ -43,22 +43,22 @@ class ParagraphsController < ApplicationController
   
   def indent
     @paragraph.indent!
-    redirect_to document_path(@document)
+    redirect_to document_path(@document, :anchor => dom_id(@paragraph))
   end
   
   def outdent
     @paragraph.outdent!
-    redirect_to document_path(@document)
+    redirect_to document_path(@document, :anchor => dom_id(@paragraph))
   end
   
   def move_lower
     @paragraph.move_lower
-    redirect_to document_path(@document)
+    redirect_to document_path(@document, :anchor => dom_id(@paragraph))
   end
   
   def move_higher
     @paragraph.move_higher
-    redirect_to document_path(@document)
+    redirect_to document_path(@document, :anchor => dom_id(@paragraph))
   end
   
 private

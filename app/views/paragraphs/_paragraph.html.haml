@@ -1,18 +1,18 @@
-%li
-  %p.control
-    = link_to "Insert paragraph", new_document_paragraph_path(:document_id => paragraph.document, :before_id => paragraph.id)
+%li.control
+  = link_to "Insert paragraph", new_document_paragraph_path(:document_id => paragraph.document, :before_id => paragraph.id)
+= content_tag_for(:li, paragraph) do
   = simple_format(paragraph.full_index + ' ' + paragraph.body_with_resolved_references)
   %p.control
     = link_to "Edit", edit_document_paragraph_path(:document_id => paragraph.document, :id => paragraph)
-    = link_to "Move up", move_higher_document_paragraph_path(:document_id => paragraph.document, :id => paragraph), :method => :post if paragraph.can_move_higher?
-    = link_to "Move down", move_lower_document_paragraph_path(:document_id => paragraph.document, :id => paragraph), :method => :post if paragraph.can_move_lower?
-    = link_to "Outdent", outdent_document_paragraph_path(:document_id => paragraph.document, :id => paragraph), :method => :post if paragraph.can_outdent?
-    = link_to "Indent", indent_document_paragraph_path(:document_id => paragraph.document, :id => paragraph), :method => :post if paragraph.can_indent?
+    = link_to_if paragraph.can_move_higher?, "Move up", move_higher_document_paragraph_path(:document_id => paragraph.document, :id => paragraph), :method => :post
+    = link_to_if paragraph.can_move_lower?, "Move down", move_lower_document_paragraph_path(:document_id => paragraph.document, :id => paragraph), :method => :post
+    = link_to_if paragraph.can_outdent?, "Outdent", outdent_document_paragraph_path(:document_id => paragraph.document, :id => paragraph), :method => :post
+    = link_to_if paragraph.can_indent?, "Indent", indent_document_paragraph_path(:document_id => paragraph.document, :id => paragraph), :method => :post
     = link_to "Delete", document_paragraph_path(:document_id => paragraph.document, :id => paragraph), :method => :delete
-  - if paragraph.last?
-    %p.control
-      = link_to "Insert paragraph", new_document_paragraph_path(:document_id => paragraph.document, :after_id => paragraph.id)
   - unless paragraph.children.empty?
     %ol
       - paragraph.children.each do |sub_paragraph|
         = render sub_paragraph
+- if paragraph.last?
+  %li.control
+    = link_to "Insert paragraph", new_document_paragraph_path(:document_id => paragraph.document, :after_id => paragraph.id)

@@ -110,5 +110,6 @@ class Paragraph < ActiveRecord::Base
   
   def prepare_for_editing
     self.body = body_with_resolved_references(true)
+    self
   end
 end

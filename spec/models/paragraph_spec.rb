@@ -45,8 +45,8 @@ describe Paragraph do
     end
     
     it "inserts a paragraph at the top" do
-      p = @document.paragraphs.build(:body => "New", :before_id => @document.top_level_paragraphs.first.id)
-      p.save!
+      paragraph = @document.paragraphs.build(:body => "New", :before_id => @document.top_level_paragraphs.first.id)
+      paragraph.save!
       @document.reload
       @document.top_level_paragraphs.map{|p| [p.parent_id, p.position, p.body]}.should == [
         [nil, 1, "New"],
@@ -57,8 +57,8 @@ describe Paragraph do
     end
     
     it "inserts a paragraph at the bottom" do
-      p = @document.paragraphs.build(:body => "New", :after_id => @document.top_level_paragraphs.last.id)
-      p.save!
+      paragraph = @document.paragraphs.build(:body => "New", :after_id => @document.top_level_paragraphs.last.id)
+      paragraph.save!
       @document.reload
       @document.top_level_paragraphs.map{|p| [p.parent_id, p.position, p.body]}.should == [
         [nil, 1, "Originally 1"],
@@ -69,8 +69,8 @@ describe Paragraph do
     end
     
     it "inserts a paragraph in the middle" do
-      p = @document.paragraphs.build(:body => "New", :before_id => @document.top_level_paragraphs[1].id)
-      p.save!
+      paragraph = @document.paragraphs.build(:body => "New", :before_id => @document.top_level_paragraphs[1].id)
+      paragraph.save!
       @document.reload
       @document.top_level_paragraphs.map{|p| [p.parent_id, p.position, p.body]}.should == [
         [nil, 1, "Originally 1"],
@@ -87,8 +87,8 @@ describe Paragraph do
       end
       
       it "inserts a paragraph at the top" do
-        p = @document.paragraphs.build(:body => "New", :before_id => @first_top_paragraph.children.first.id)
-        p.save!
+        paragraph = @document.paragraphs.build(:body => "New", :before_id => @first_top_paragraph.children.first.id)
+        paragraph.save!
         @first_top_paragraph.reload
         @first_top_paragraph.children.map{|p| [p.parent_id, p.position, p.body]}.should == [
           [@first_top_paragraph.id, 1, "New"],
@@ -99,8 +99,8 @@ describe Paragraph do
       end
 
       it "inserts a paragraph at the bottom" do
-        p = @document.paragraphs.build(:body => "New", :after_id => @first_top_paragraph.children.last.id)
-        p.save!
+        paragraph = @document.paragraphs.build(:body => "New", :after_id => @first_top_paragraph.children.last.id)
+        paragraph.save!
         @first_top_paragraph.reload
         @first_top_paragraph.children.map{|p| [p.parent_id, p.position, p.body]}.should == [
           [@first_top_paragraph.id, 1, "Child originally 1"],
@@ -111,8 +111,8 @@ describe Paragraph do
       end
 
       it "inserts a paragraph in the middle" do
-        p = @document.paragraphs.build(:body => "New", :before_id => @first_top_paragraph.children[1].id)
-        p.save!
+        paragraph = @document.paragraphs.build(:body => "New", :before_id => @first_top_paragraph.children[1].id)
+        paragraph.save!
         @first_top_paragraph.reload
         @first_top_paragraph.children.map{|p| [p.parent_id, p.position, p.body]}.should == [
           [@first_top_paragraph.id, 1, "Child originally 1"],
@@ -129,14 +129,14 @@ describe Paragraph do
       @document = Document.create
       @tlp = @document.top_level_paragraphs.create(:body => "top-level")
       3.times{@document.paragraphs.create(:parent_id => @tlp.id)}
-      @document.paragraphs.map{|p| [p.parent_id, p.position]}.should == [
+      @document.paragraphs.map{|p| [p.parent_id, p.position]}.should eq [
         [nil, 1],
         [@tlp.id, 1],
         [@tlp.id, 2],
         [@tlp.id, 3]
       ]
-      
-      @document.paragraphs.count.should == 4
+
+      @document.paragraphs.count.should eq 4
       @document.reload.top_level_paragraphs.first.destroy
       @document.reload.paragraphs.count.should == 0
     end

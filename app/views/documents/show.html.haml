@@ -7,7 +7,7 @@
     %p.control
       = link_to "Insert paragraph", new_document_paragraph_path(:document_id => @document), :class => 'insert_paragraph'
     .insert_paragraph_form{:style => "display: none;"}
-      = form_for :paragraph do |f|
+      = form_for :paragraph, :url => document_paragraphs_path(:document_id => @document) do |f|
         = render(:partial => 'paragraphs/form', :locals => {:f => f, :cancel_link => true})
   
 

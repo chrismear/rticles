@@ -2,12 +2,12 @@ require 'spec_helper'
 
 describe Paragraph do
   include DocumentMacros
-  
+
   describe "top-level positioning" do
     before(:each) do
       @document = Document.create
     end
-    
+
     it "is assigned correctly when pushing paragraphs to a document" do
       paragraphs = Array.new(4){Paragraph.new}
       paragraphs.each{|p| @document.top_level_paragraphs.push(p)}
@@ -16,20 +16,20 @@ describe Paragraph do
       @document.top_level_paragraphs.map(&:position).should == [1, 2, 3, 4]
     end
   end
-  
+
   describe "child paragraphs" do
     before(:each) do
       @document = Document.create
       @paragraph = @document.top_level_paragraphs.create
     end
-    
+
     it "are assigned parentage when pushing child paragraphs to a parent paragraph" do
       child = Paragraph.new
       @paragraph.children.push(child)
       child.reload
       child.parent_id.should == @paragraph.id
     end
-    
+
     it "are associated with their parent's document" do
       child = Paragraph.new
       @paragraph.children.push(child)
@@ -37,13 +37,13 @@ describe Paragraph do
       child.document_id.should == @document.id
     end
   end
-  
+
   describe "inserting paragraphs" do
     before(:each) do
       @document = Document.create
       3.times{|i| @document.top_level_paragraphs.create(:body => "Originally #{i + 1}")}
     end
-    
+
     it "inserts a paragraph at the top" do
       paragraph = @document.paragraphs.build(:body => "New", :before_id => @document.top_level_paragraphs.first.id)
       paragraph.save!
@@ -55,7 +55,7 @@ describe Paragraph do
         [nil, 4, "Originally 3"]
       ]
     end
-    
+
     it "inserts a paragraph at the bottom" do
       paragraph = @document.paragraphs.build(:body => "New", :after_id => @document.top_level_paragraphs.last.id)
       paragraph.save!
@@ -67,7 +67,7 @@ describe Paragraph do
         [nil, 4, "New"]
       ]
     end
-    
+
     it "inserts a paragraph in the middle" do
       paragraph = @document.paragraphs.build(:body => "New", :before_id => @document.top_level_paragraphs[1].id)
       paragraph.save!
@@ -79,13 +79,13 @@ describe Paragraph do
         [nil, 4, "Originally 3"]
       ]
     end
-    
+
     context "into a list of children" do
       before(:each) do
         @first_top_paragraph = @document.top_level_paragraphs.first
         3.times{|i| @document.paragraphs.create(:parent_id => @first_top_paragraph.id, :body => "Child originally #{i + 1}")}
       end
-      
+
       it "inserts a paragraph at the top" do
         paragraph = @document.paragraphs.build(:body => "New", :before_id => @first_top_paragraph.children.first.id)
         paragraph.save!
@@ -123,7 +123,7 @@ describe Paragraph do
       end
     end
   end
-  
+
   describe "deleting" do
     it "deletes its children" do
       @document = Document.create
@@ -141,28 +141,28 @@ describe Paragraph do
       @document.reload.paragraphs.count.should == 0
     end
   end
-  
+
   describe "indenting" do
     it "makes the paragraph a child of its previous sibling" do
       stub_outline([:one, :two])
       @document.top_level_paragraphs[1].indent!
       @document.reload.outline.should == ['one', ['two']]
     end
-    
+
     it "goes at the bottom of the previous sibling's children" do
       stub_outline([:one, [:sub_one, :sub_two], :two])
       @document.top_level_paragraphs[1].indent!
       @document.reload.outline.should == ['one', ['sub_one', 'sub_two', 'two']]
     end
   end
-  
+
   describe "outdenting" do
     it "inserts itself back into its parent's level" do
       stub_outline([:one, [:two]])
       @document.top_level_paragraphs[0].children[0].outdent!
       @document.reload.outline.should == ['one', 'two']
     end
-    
+
     it "splits its siblings" do
       stub_outline [:one, [:sub_one, :sub_two, :sub_three], :two]
       @document.top_level_paragraphs[0].children[1].outdent!

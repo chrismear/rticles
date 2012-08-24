@@ -1,0 +1,2 @@
+module Rticles
+end

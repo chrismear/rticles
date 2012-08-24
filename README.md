@@ -1,7 +1,7 @@
 Rticles
 =======
 
-Rticles is a web-based editor for legal documents. It lets you create nested, numbered paragraphs, along with intra-document references that remain accurate as paragraphs are inserted, removed and moved.
+Rticles is a Rails plugin that allows for web-based editing of legal documents. It lets you create nested, numbered paragraphs, along with intra-document references that remain accurate as paragraphs are inserted, removed and moved.
 
 This is a technology test for [One Click Orgs](http://github.com/oneclickorgs/one-click-orgs/).
 
@@ -11,7 +11,7 @@ License
 Rticles is licensed under the [GNU Affero General Public License, Version 3](http://www.fsf.org/licensing/licenses/agpl-3.0.html).
 
     Rticles
-    Copyright (C) 2011 Circus Foundation
+    Copyright (C) 2011, 2012 Circus Foundation
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as
@@ -29,5 +29,5 @@ Rticles is licensed under the [GNU Affero General Public License, Version 3](htt
 Rticles incorporates work covered by the following copyright and permission notice:
 
     acts_as_list
-    
+
     Copyright (c) 2007 David Heinemeier Hansson, released under the MIT license

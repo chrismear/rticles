@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.summary     = "Consistent editing for legal documents."
   s.description = "Rticles is a Rails plugin that allows for web-based editing of legal documents. It lets you create nested, numbered paragraphs, along with intra-document references that remain accurate as paragraphs are inserted, removed and moved."
 
-  s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc"]
+  s.files       = `git ls-files`.split($\)
 
   s.add_dependency "rails", "~> 3.2.8"
   s.add_dependency "acts_as_list", "~>0.1.8"

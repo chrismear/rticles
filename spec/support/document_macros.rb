@@ -1,6 +1,6 @@
 module DocumentMacros
   def stub_outline(outline=[])
-    @document ||= Document.create
+    @document ||= Rticles::Document.create
     i = 0
     while i < outline.length
       tlp = @document.top_level_paragraphs.create(:body => outline[i].to_s)
@@ -13,7 +13,7 @@ module DocumentMacros
     end
     @document
   end
-  
+
   def stub_child_paragraphs(p, outline)
     document = p.document
     i = 0

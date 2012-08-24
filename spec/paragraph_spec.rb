@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe Paragraph do
+describe Rticles::Paragraph do
   include DocumentMacros
 
   describe "top-level positioning" do
     before(:each) do
-      @document = Document.create
+      @document = Rticles::Document.create
     end
 
     it "is assigned correctly when pushing paragraphs to a document" do
@@ -19,19 +19,19 @@ describe Paragraph do
 
   describe "child paragraphs" do
     before(:each) do
-      @document = Document.create
+      @document = Rticles::Document.create
       @paragraph = @document.top_level_paragraphs.create
     end
 
     it "are assigned parentage when pushing child paragraphs to a parent paragraph" do
-      child = Paragraph.new
+      child = Rticles::Paragraph.new
       @paragraph.children.push(child)
       child.reload
       child.parent_id.should == @paragraph.id
     end
 
     it "are associated with their parent's document" do
-      child = Paragraph.new
+      child = Rticles::Paragraph.new
       @paragraph.children.push(child)
       child.reload
       child.document_id.should == @document.id
@@ -40,7 +40,7 @@ describe Paragraph do
 
   describe "inserting paragraphs" do
     before(:each) do
-      @document = Document.create
+      @document = Rticles::Document.create
       3.times{|i| @document.top_level_paragraphs.create(:body => "Originally #{i + 1}")}
     end
 
@@ -126,7 +126,7 @@ describe Paragraph do
 
   describe "deleting" do
     it "deletes its children" do
-      @document = Document.create
+      @document = Rticles::Document.create
       @tlp = @document.top_level_paragraphs.create(:body => "top-level")
       3.times{@document.paragraphs.create(:parent_id => @tlp.id)}
       @document.paragraphs.map{|p| [p.parent_id, p.position]}.should eq [

@@ -2,6 +2,8 @@ require 'acts_as_list'
 
 module Rticles
   class Paragraph < ActiveRecord::Base
+    attr_accessible :body, :parent_id, :after_id, :position, :before_id
+
     belongs_to :document
     belongs_to :parent, :class_name => 'Paragraph'
     has_many :children, :class_name => 'Paragraph', :foreign_key => 'parent_id', :order => 'position', :dependent => :destroy

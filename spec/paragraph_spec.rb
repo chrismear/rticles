@@ -9,7 +9,7 @@ describe Rticles::Paragraph do
     end
 
     it "is assigned correctly when pushing paragraphs to a document" do
-      paragraphs = Array.new(4){Paragraph.new}
+      paragraphs = Array.new(4){Rticles::Paragraph.new}
       paragraphs.each{|p| @document.top_level_paragraphs.push(p)}
       @document.save
       @document.reload

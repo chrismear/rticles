@@ -31,7 +31,7 @@ class ParagraphsController < ApplicationController
     if @paragraph.update_attributes(params[:paragraph])
       respond_to do |format|
         format.html {redirect_to document_path(@document, :anchor => dom_id(@paragraph)), :notice => "Paragraph updated."}
-        format.js   {render :partial => 'paragraphs/paragraph_internal', :locals => {:paragraph => @paragraph}}
+        format.js
       end
     else
       flash.now[:alert] = "There was a problem updating the paragraph."
@@ -67,7 +67,7 @@ class ParagraphsController < ApplicationController
 private
 
   def find_document
-    @document = Document.find(params[:document_id])
+    @document = Rticles::Document.find(params[:document_id])
   end
 
   def find_paragraph

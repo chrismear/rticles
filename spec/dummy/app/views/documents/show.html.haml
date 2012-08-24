@@ -1,7 +1,7 @@
 %h1= @document.title
 %ol
   - @document.top_level_paragraphs.each do |paragraph|
-    = render paragraph
+    = render :partial => 'paragraphs/paragraph', :object => paragraph
 - if @document.top_level_paragraphs.empty?
   .insert_paragraph_wrapper
     %p.control

@@ -9,5 +9,5 @@
       = link_to_if paragraph.can_indent?, "Indent", indent_document_paragraph_path(:document_id => paragraph.document, :id => paragraph), :method => :post
       = link_to "Delete", document_paragraph_path(:document_id => paragraph.document, :id => paragraph), :method => :delete
   .edit_paragraph_form{:style => "display: none;"}
-    = form_for [paragraph.document, paragraph.prepare_for_editing], :remote => true do |f|
+    = form_for paragraph.prepare_for_editing, :as => :paragraph, :url => document_paragraph_path(:document_id => paragraph.document, :id => paragraph), :method => :put, :remote => true do |f|
       = render(:partial => 'paragraphs/form', :locals => {:f => f, :cancel_link => true})

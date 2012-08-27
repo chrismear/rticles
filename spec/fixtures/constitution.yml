@@ -1,7 +1,8 @@
 ---
 - ! 'This is the constitution ("Constitution") of #rticles#organisation_name.'
 - ! 'The Organisation has the objectives of #rticles#objectives.'
-- ! '#rticles#assets'
+- ! '#rticles#true#assets The Organisation may hold, transfer and dispose of material assets and intangible assets.'
+- ! '#rticles#false#assets The Organisation does not hold material assets or intangible assets.'
 - The Organisation uses an electronic system to carry out its governance ("Governance
   System").
 - The Organisation has one or more members ("Members") who support its Objectives.

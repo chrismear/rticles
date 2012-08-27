@@ -106,9 +106,18 @@ module Rticles
       if options[:insertions]
         @insertions = options[:insertions]
       end
+
+      if options[:choices]
+        @choices = options[:choices]
+      end
+
       with_meta_characters = options[:with_meta_characters] || false
-      result = resolve_references(body, with_meta_characters)
-      resolve_insertions(result)
+
+      result = resolve_choices(body)
+      return result if result.nil?
+
+      result = resolve_references(result, with_meta_characters)
+      result = resolve_insertions(result)
     end
 
     def body_with_resolved_references(with_meta_characters=false)
@@ -139,6 +148,21 @@ module Rticles
       end
     end
 
+    def resolve_choices(string)
+      choice_re = /\A#rticles#(true|false)#([A-Za-z_]+) /
+      match = string.match(choice_re)
+      return string if !match
+
+      choice_name = match[2]
+      choice_parameter = match[1]
+
+      if (choices[choice_name] && choice_parameter == 'true') || (!choices[choice_name] && choice_parameter == 'false')
+        string.sub(choice_re, '')
+      else
+        nil
+      end
+    end
+
     def prepare_for_editing
       self.body = body_with_resolved_references(true)
       self
@@ -153,6 +177,10 @@ module Rticles
       rescue NoMethodError
         raise RuntimeError, "parent was nil when finding insertions; I am: #{self.inspect}"
       end
+    end
+
+    def choices
+      return @choices.with_indifferent_access if @choices
     end
   end
 end

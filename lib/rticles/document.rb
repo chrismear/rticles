@@ -7,20 +7,33 @@ module Rticles
 
     alias_method :children, :paragraphs
 
-    attr_accessor :insertions
+    attr_accessor :insertions, :choices
 
-    after_initialize :set_up_insertions
+    after_initialize :after_initialize
+    def after_initialize
+      set_up_insertions
+      set_up_choices
+    end
+
     def set_up_insertions
       self.insertions ||= {}
       self.insertions = insertions.with_indifferent_access
     end
 
+    def set_up_choices
+      self.choices ||= {}
+      self.choices = choices.with_indifferent_access
+    end
+
     def outline(for_display=false)
       o = []
       top_level_paragraphs.each do |tlp|
-        o.push(for_display ? tlp.body_for_display(:insertions => insertions) : tlp.body)
-        unless tlp.children.empty?
-          o.push(sub_outline(tlp, for_display))
+        body = for_display ? tlp.body_for_display(:insertions => insertions, :choices => choices) : tlp.body
+        if body
+          o.push(for_display ? tlp.body_for_display(:insertions => insertions, :choices => choices) : tlp.body)
+          unless tlp.children.empty?
+            o.push(sub_outline(tlp, for_display))
+          end
         end
       end
       o
@@ -61,9 +74,12 @@ module Rticles
     def sub_outline(p, for_display=false)
       o = []
       p.children.each do |c|
-        o.push(for_display ? c.body_for_display(:insertions => insertions) : c.body)
-        unless c.children.empty?
-          o.push(sub_outline(c, for_display))
+        body = for_display ? c.body_for_display(:insertions => insertions, :choices => choices) : c.body
+        if body
+          o.push(body)
+          unless c.children.empty?
+            o.push(sub_outline(c, for_display))
+          end
         end
       end
       o

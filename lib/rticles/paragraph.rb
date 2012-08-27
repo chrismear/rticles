@@ -102,10 +102,23 @@ module Rticles
       end
     end
 
+    def body_for_display(options={})
+      if options[:insertions]
+        @insertions = options[:insertions]
+      end
+      with_meta_characters = options[:with_meta_characters] || false
+      result = resolve_references(body, with_meta_characters)
+      resolve_insertions(result)
+    end
+
     def body_with_resolved_references(with_meta_characters=false)
-      return body if body.blank?
+      resolve_references(body, with_meta_characters)
+    end
+
+    def resolve_references(string, with_meta_characters=false)
+      return string if string.blank?
       normalised_reference_re = /#rticles#(\d+)/
-      body.gsub(normalised_reference_re) do |match|
+      string.gsub(normalised_reference_re) do |match|
         normalised_reference = match.sub('#rticles#', '')
         result = with_meta_characters ? '!' : ''
         result += document.paragraphs.find(normalised_reference).full_index
@@ -113,9 +126,33 @@ module Rticles
       end
     end
 
+    def resolve_insertions(string)
+      return string if string.blank?
+      insertion_re = /#rticles#([A-Za-z_]+)/
+      string.gsub(insertion_re) do |match|
+        insertion_name = match.sub('#rticles#', '')
+        if insertions[insertion_name].present?
+          insertions[insertion_name]
+        else
+          "[#{insertion_name.humanize.upcase}]"
+        end
+      end
+    end
+
     def prepare_for_editing
       self.body = body_with_resolved_references(true)
       self
+    end
+
+  protected
+
+    def insertions
+      return @insertions.with_indifferent_access if @insertions
+      begin
+        (parent || document).insertions.with_indifferent_access
+      rescue NoMethodError
+        raise RuntimeError, "parent was nil when finding insertions; I am: #{self.inspect}"
+      end
     end
   end
 end

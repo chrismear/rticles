@@ -7,12 +7,20 @@ module Rticles
 
     alias_method :children, :paragraphs
 
-    def outline
+    attr_accessor :insertions
+
+    after_initialize :set_up_insertions
+    def set_up_insertions
+      self.insertions ||= {}
+      self.insertions = insertions.with_indifferent_access
+    end
+
+    def outline(for_display=false)
       o = []
       top_level_paragraphs.each do |tlp|
-        o.push(tlp.body)
+        o.push(for_display ? tlp.body_for_display(:insertions => insertions) : tlp.body)
         unless tlp.children.empty?
-          o.push(sub_outline(tlp))
+          o.push(sub_outline(tlp, for_display))
         end
       end
       o
@@ -50,12 +58,12 @@ module Rticles
 
   protected
 
-    def sub_outline(p)
+    def sub_outline(p, for_display=false)
       o = []
       p.children.each do |c|
-        o.push(c.body)
+        o.push(for_display ? c.body_for_display(:insertions => insertions) : c.body)
         unless c.children.empty?
-          o.push(sub_outline(c))
+          o.push(sub_outline(c, for_display))
         end
       end
       o

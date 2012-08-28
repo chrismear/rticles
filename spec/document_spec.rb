@@ -5,16 +5,16 @@ describe Rticles::Document do
   describe ".from_yaml" do
     it "works with sub-paragraphs" do
       yaml = File.open('spec/fixtures/simple.yml', 'r')
-      document = Rticles::Document.from_yaml(yaml)
       expect {
-        document.save!
-      }.to change{Rticles::Paragraph.count}.by(3)
-      document.outline.should == [
-        'Paragraph 1',
+        @document = Rticles::Document.from_yaml(yaml)
+      }.to change{Rticles::Paragraph.count}.by(4)
+      @document.outline(:with_index => true, :for_display => true).should == [
+        '1 Paragraph 1',
         [
-          'Paragraph 1.1'
+          '1.1 Paragraph 1.1',
+          '1.2 Paragraph 1.2'
         ],
-        'Paragraph 2'
+        '2 Paragraph 2'
       ]
     end
 

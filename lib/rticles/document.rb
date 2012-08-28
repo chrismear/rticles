@@ -60,14 +60,14 @@ module Rticles
 
     def self.from_yaml(yaml)
       parsed_yaml = YAML.load(yaml)
-      document = self.new
+      document = self.create
 
-      build_paragraphs_from_array(document.paragraphs, parsed_yaml)
+      create_paragraphs_from_array(document, nil, parsed_yaml)
 
       document
     end
 
-    def self.build_paragraphs_from_array(paragraphs_relation, array)
+    def self.create_paragraphs_from_array(document, parent, array)
       array.each do |text_or_sub_array|
         case text_or_sub_array
         when String
@@ -99,7 +99,8 @@ module Rticles
               heading = heading_match[1].sub(/\A#/, '').to_i
             end
           end
-          paragraphs_relation << Rticles::Paragraph.new(
+          document.paragraphs.create(
+            :parent_id => parent ? parent.id : nil,
             :body => text_or_sub_array,
             :name => name,
             :topic => topic,
@@ -107,10 +108,15 @@ module Rticles
             :continuation => continuation
           )
         when Array
+          paragraphs_relation = parent ? parent.children : document.paragraphs.select{|p| p.parent_id.nil?}
           if paragraphs_relation.empty?
             raise RuntimeError, "jump in nesting at: #{text_or_sub_array.first}"
           end
-          build_paragraphs_from_array(paragraphs_relation.last.children, text_or_sub_array)
+          create_paragraphs_from_array(
+            document,
+            paragraphs_relation.last,
+            text_or_sub_array
+          )
         end
       end
     end

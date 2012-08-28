@@ -42,6 +42,13 @@ module Rticles
       o
     end
 
+    def to_html
+      html = "<section>"
+      html += Rticles::Paragraph.generate_html(top_level_paragraphs, :insertions => insertions, :choices => choices)
+      html += "</section>"
+      html
+    end
+
     def to_yaml
       outline.to_yaml
     end

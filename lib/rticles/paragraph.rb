@@ -41,13 +41,16 @@ module Rticles
     end
 
     def index
-      return nil if heading?
+      return nil if heading? || continuation?
       position - higher_items.where(['heading >= 1 OR continuation = ?', true]).count
     end
 
-    def full_index
-      return nil if heading?
-      ancestors.unshift(self).reverse.map(&:index).join('.')
+    def full_index(recalculate=false)
+      return nil if heading? || continuation?
+
+      return @full_index if @full_index && !recalculate
+
+      @full_index = ancestors.unshift(self).reverse.map(&:index).join('.')
     end
 
     def ancestors
@@ -139,6 +142,12 @@ module Rticles
 
       result = resolve_references(result, with_meta_characters)
       result = resolve_insertions(result)
+
+      if options[:with_index] && full_index
+        result = "#{full_index} #{result}"
+      end
+
+      result
     end
 
     def body_with_resolved_references(with_meta_characters=false)
@@ -189,7 +198,64 @@ module Rticles
       self
     end
 
+    def self.generate_html(paragraphs, options={})
+      paragraph_groups = []
+      paragraphs.each do |paragraph|
+        if paragraph.continuation?
+          paragraph_groups.last.push(paragraph)
+        else
+          paragraph_groups.push([paragraph])
+        end
+      end
+      generate_html_for_paragraph_groups(paragraph_groups, options)
+    end
+
   protected
+
+    def self.generate_html_for_paragraph_groups(paragraph_groups, options={})
+      previous_type = nil
+      html = paragraph_groups.inject("") do |memo, paragraph_group|
+        # FIXME: Don't generate HTML by interpolating into a string;
+        # use some standard library function that provides some safe
+        # escaping defaults, etc..
+        if paragraph_group.first.heading?
+          if previous_type == :paragraph
+            memo += "</ol>"
+          end
+          if paragraph_group.length == 1
+            memo += generate_html_for_paragraphs(paragraph_group, options)
+          else
+            memo += "<hgroup>#{generate_html_for_paragraphs(paragraph_group, options)}</hgroup>"
+          end
+          previous_type = :heading
+        else
+          unless previous_type == :paragraph
+            memo += "<ol>"
+          end
+          memo += "<li>#{generate_html_for_paragraphs(paragraph_group, options)}</li>"
+          previous_type = :paragraph
+        end
+        memo
+      end
+      if previous_type == :paragraph
+        html += "</ol>"
+      end
+    end
+
+    def self.generate_html_for_paragraphs(paragraphs, options={})
+      paragraphs.inject("") do |memo, paragraph|
+        if paragraph.heading?
+          memo += "<h#{paragraph.heading_level}>#{paragraph.body_for_display({:with_index => true}.merge(options))}</h#{paragraph.heading_level}>"
+        else
+          memo += paragraph.body_for_display({:with_index => true}.merge(options))
+        end
+
+        if !paragraph.children.empty?
+          memo += generate_html(paragraph.children, options)
+        end
+        memo
+      end
+    end
 
     def insertions
       return @insertions.with_indifferent_access if @insertions

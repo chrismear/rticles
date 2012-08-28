@@ -174,7 +174,7 @@ describe Rticles::Paragraph do
     before(:each) do
       @document = Rticles::Document.create
       @document.top_level_paragraphs.create(:body => 'one')
-      @document.top_level_paragraphs.create(:body => 'Heading one', :heading => true)
+      @document.top_level_paragraphs.create(:body => 'Heading one', :heading => 1)
       @document.top_level_paragraphs.create(:body => 'two')
     end
 
@@ -185,6 +185,59 @@ describe Rticles::Paragraph do
 
     it "returns nil for headings" do
       @document.paragraphs[1].index.should be_nil
+    end
+  end
+
+  describe "generating HTML" do
+    before(:each) do
+      @document = Rticles::Document.create
+      @document.top_level_paragraphs.create(:body => "A Simple Constitution", :heading => 1)
+      @document.top_level_paragraphs.create(:body => "For demonstration purposes only", :heading => 2, :continuation => true)
+
+      @document.top_level_paragraphs.create(:body => "This is the first rule.")
+
+      p = @document.top_level_paragraphs.create(:body => "This is the second rule, which applies when:")
+      @document.paragraphs.create(:body => "This condition;", :parent_id => p.id)
+      @document.paragraphs.create(:body => "and this condition.", :parent_id => p.id)
+      @document.top_level_paragraphs.create(:body => "except when it is a Full Moon.", :continuation => true)
+
+      @document.top_level_paragraphs.create(:body => "This is the third rule.")
+
+      @document.top_level_paragraphs.create(:body => "This is the fourth rule.")
+      @document.top_level_paragraphs.create(:body => "And finally...", :heading => 2)
+      @document.top_level_paragraphs.create(:body => "This is the final rule.")
+    end
+
+    it "works" do
+      expected_html = <<-EOF
+      <section>
+        <hgroup>
+          <h1>A Simple Constitution</h1>
+          <h2>For demonstration purposes only</h2>
+        </hgroup>
+        <ol>
+          <li>1 This is the first rule.</li>
+          <li>
+            2 This is the second rule, which applies when:
+            <ol>
+              <li>2.1 This condition;</li>
+              <li>2.2 and this condition.</li>
+            </ol>
+            except when it is a Full Moon.
+          </li>
+          <li>3 This is the third rule.</li>
+          <li>4 This is the fourth rule.</li>
+        </ol>
+        <h2>And finally...</h2>
+        <ol>
+          <li>5 This is the final rule.</li>
+        </ol>
+      </section>
+      EOF
+
+      html = @document.to_html
+
+      html.should be_equivalent_to(expected_html)
     end
   end
 end

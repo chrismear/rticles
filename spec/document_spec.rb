@@ -17,6 +17,14 @@ describe Rticles::Document do
         'Paragraph 2'
       ]
     end
+
+    it "works with headings" do
+      yaml = File.open('spec/fixtures/ips.yml', 'r')
+      document = Rticles::Document.from_yaml(yaml)
+      document.save!
+
+      document.top_level_paragraphs.first.should be_heading
+    end
   end
 
   describe "customisations" do

@@ -245,10 +245,13 @@ module Rticles
 
     def self.generate_html_for_paragraphs(paragraphs, options={})
       paragraphs.inject("") do |memo, paragraph|
+        body = paragraph.body_for_display({:with_index => true}.merge(options))
+        return memo if body.nil?
+
         if paragraph.heading?
-          memo += "<h#{paragraph.heading_level}>#{paragraph.body_for_display({:with_index => true}.merge(options))}</h#{paragraph.heading_level}>"
+          memo += "<h#{paragraph.heading_level}>#{body}</h#{paragraph.heading_level}>"
         else
-          memo += paragraph.body_for_display({:with_index => true}.merge(options))
+          memo += body
         end
 
         if !paragraph.children.empty?

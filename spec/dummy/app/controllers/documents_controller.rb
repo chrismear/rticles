@@ -19,6 +19,12 @@ class DocumentsController < ApplicationController
 
   def show
     @document = Rticles::Document.find(params[:id])
+    if params[:choices]
+      @document.choices = params[:choices]
+    end
+    if params[:insertions]
+      @document.insertions = params[:insertions]
+    end
   end
 
   def edit

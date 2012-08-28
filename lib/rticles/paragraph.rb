@@ -47,7 +47,7 @@ module Rticles
 
     def full_index
       return nil if heading?
-      ancestors.unshift(self).reverse.map(&:position).join('.')
+      ancestors.unshift(self).reverse.map(&:index).join('.')
     end
 
     def ancestors

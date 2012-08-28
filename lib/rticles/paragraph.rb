@@ -271,7 +271,11 @@ module Rticles
     end
 
     def choices
-      return @choices.with_indifferent_access if @choices
+      if @choices
+        @choices.with_indifferent_access
+      else
+        {}.with_indifferent_access
+      end
     end
   end
 end

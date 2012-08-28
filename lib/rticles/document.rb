@@ -2,6 +2,8 @@ require 'yaml'
 
 module Rticles
   class Document < ActiveRecord::Base
+    NAME_RE = /\A#rticles#name#([A-Za-z_]+) /
+    TOPIC_RE = /\A#rticles#topic#([A-Za-z_]+) /
     CONTINUATION_RE = /\A#rticles#continue /
     HEADING_RE = /\A#rticles#heading(#\d+|) /
 
@@ -66,8 +68,20 @@ module Rticles
       array.each do |text_or_sub_array|
         case text_or_sub_array
         when String
+          name = nil
+          topic = nil
           continuation = false
           heading = nil
+
+          if name_match = text_or_sub_array.match(NAME_RE)
+            text_or_sub_array = text_or_sub_array.sub(NAME_RE, '')
+            name = name_match[1]
+          end
+
+          if topic_match = text_or_sub_array.match(TOPIC_RE)
+            text_or_sub_array = text_or_sub_array.sub(TOPIC_RE, '')
+            topic = topic_match[1]
+          end
 
           if text_or_sub_array.match(CONTINUATION_RE)
             text_or_sub_array = text_or_sub_array.sub(CONTINUATION_RE, '')
@@ -84,6 +98,8 @@ module Rticles
           end
           paragraphs_relation << Rticles::Paragraph.new(
             :body => text_or_sub_array,
+            :name => name,
+            :topic => topic,
             :heading => heading,
             :continuation => continuation
           )

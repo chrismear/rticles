@@ -2,7 +2,8 @@ require 'acts_as_list'
 
 module Rticles
   class Paragraph < ActiveRecord::Base
-    attr_accessible :body, :parent_id, :after_id, :position, :before_id, :heading, :continuation
+    attr_accessible :body, :parent_id, :after_id, :position, :before_id, :heading, :continuation,
+      :name, :topic
 
     belongs_to :document
     belongs_to :parent, :class_name => 'Paragraph'

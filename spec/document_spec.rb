@@ -35,6 +35,20 @@ describe Rticles::Document do
         p.heading.should eq 2
       end
     end
+
+    describe "topics" do
+      before(:each) do
+        yaml = File.open('spec/fixtures/ips.yml', 'r')
+        @document = Rticles::Document.from_yaml(yaml)
+        @document.save!
+      end
+
+      it "saves the topics" do
+        objects_paragraph = Rticles::Paragraph.where(:topic => 'objects', :document_id => @document.id).first
+        objects_paragraph.should be_present
+        objects_paragraph.body.should == "The objects of the Co-operative shall be to carry on the business as a co-operative and to carry on any other trade, business or service and in particular to #rticles#objectives"
+      end
+    end
   end
 
   describe "customisations" do

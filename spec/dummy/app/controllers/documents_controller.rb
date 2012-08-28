@@ -3,10 +3,6 @@ class DocumentsController < ApplicationController
     @documents = Rticles::Document.all
   end
 
-  def show
-    @document = Rticles::Document.find(params[:id])
-  end
-
   def new
     @document = Rticles::Document.new
   end
@@ -19,5 +15,14 @@ class DocumentsController < ApplicationController
       flash.now[:alert] = "There was a problem creating your new document."
       render :action => 'new'
     end
+  end
+
+  def show
+    @document = Rticles::Document.find(params[:id])
+  end
+
+  def edit
+    @document = Rticles::Document.find(params[:id])
+    @editing = true
   end
 end

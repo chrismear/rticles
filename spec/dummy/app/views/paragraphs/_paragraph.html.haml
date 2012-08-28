@@ -1,19 +1,21 @@
-%li.control
-  %p.control
-    = link_to "Insert paragraph", new_document_paragraph_path(:document_id => paragraph.document, :before_id => paragraph.id), :class => 'insert_paragraph'
-  .insert_paragraph_form{:style => "display: none;"}
-    = form_for Rticles::Paragraph.new(:before_id => paragraph.id), :as => :paragraph, :url => document_paragraphs_path(:document_id => paragraph.document) do |f|
-      = render(:partial => 'paragraphs/form', :locals => {:f => f, :cancel_link => true})
+- if @editing
+  %li.control
+    %p.control
+      = link_to "Insert paragraph", new_document_paragraph_path(:document_id => paragraph.document, :before_id => paragraph.id), :class => 'insert_paragraph'
+    .insert_paragraph_form{:style => "display: none;"}
+      = form_for Rticles::Paragraph.new(:before_id => paragraph.id), :as => :paragraph, :url => document_paragraphs_path(:document_id => paragraph.document) do |f|
+        = render(:partial => 'paragraphs/form', :locals => {:f => f, :cancel_link => true})
 = content_tag_for(:li, paragraph) do
   = render(:partial => 'paragraphs/paragraph_internal', :locals => {:paragraph => paragraph})
   - unless paragraph.children.empty?
     %ol
       - paragraph.children.each do |sub_paragraph|
         = render :partial => 'paragraphs/paragraph', :object => sub_paragraph
-- if paragraph.last?
-  %li.control
-    %p.control
-      = link_to "Insert paragraph", new_document_paragraph_path(:document_id => paragraph.document, :after_id => paragraph.id), :class => 'insert_paragraph'
-    .insert_paragraph_form{:style => "display: none;"}
-      = form_for Rticles::Paragraph.new(:after_id => paragraph.id), :as => :paragraph, :url => document_paragraphs_path(:document_id => paragraph.document) do |f|
-        = render(:partial => 'paragraphs/form', :locals => {:f => f, :cancel_link => true})
+- if @editing
+  - if paragraph.last?
+    %li.control
+      %p.control
+        = link_to "Insert paragraph", new_document_paragraph_path(:document_id => paragraph.document, :after_id => paragraph.id), :class => 'insert_paragraph'
+      .insert_paragraph_form{:style => "display: none;"}
+        = form_for Rticles::Paragraph.new(:after_id => paragraph.id), :as => :paragraph, :url => document_paragraphs_path(:document_id => paragraph.document) do |f|
+          = render(:partial => 'paragraphs/form', :locals => {:f => f, :cancel_link => true})

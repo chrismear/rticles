@@ -32,9 +32,13 @@ module Rticles
       end
     end
 
+    def heading?
+      heading && heading > 0
+    end
+
     def index
       return nil if heading?
-      position - higher_items.where(['heading = ?', true]).count
+      position - higher_items.where(['heading >= 1']).count
     end
 
     def full_index

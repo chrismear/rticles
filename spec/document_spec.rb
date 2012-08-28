@@ -18,12 +18,22 @@ describe Rticles::Document do
       ]
     end
 
-    it "works with headings" do
-      yaml = File.open('spec/fixtures/ips.yml', 'r')
-      document = Rticles::Document.from_yaml(yaml)
-      document.save!
+    describe "headings" do
+      before(:each) do
+        yaml = File.open('spec/fixtures/ips.yml', 'r')
+        @document = Rticles::Document.from_yaml(yaml)
+        @document.save!
+      end
 
-      document.top_level_paragraphs.first.should be_heading
+      it "works with headings" do
+        @document.top_level_paragraphs.first.should be_heading
+      end
+
+      it "works with sub-headings" do
+        p = @document.top_level_paragraphs[20]
+        p.body.should eq "Borrowing from Members"
+        p.heading.should eq 2
+      end
     end
   end
 

@@ -2,7 +2,7 @@ require 'yaml'
 
 module Rticles
   class Document < ActiveRecord::Base
-    HEADING_RE = /\A#rticles#heading /
+    HEADING_RE = /\A#rticles#heading(#\d+|) /
 
     has_many :paragraphs, :order => 'position'
     has_many :top_level_paragraphs, :class_name => 'Paragraph', :order => 'position', :conditions => "parent_id IS NULL"
@@ -58,11 +58,15 @@ module Rticles
       array.each do |text_or_sub_array|
         case text_or_sub_array
         when String
-          if text_or_sub_array.match(HEADING_RE)
+          if heading_match = text_or_sub_array.match(HEADING_RE)
             text_or_sub_array = text_or_sub_array.sub(HEADING_RE, '')
-            heading = true
+            if heading_match[1].empty?
+              heading = 1
+            else
+              heading = heading_match[1].sub(/\A#/, '').to_i
+            end
           else
-            heading = false
+            heading = nil
           end
           paragraphs_relation << Rticles::Paragraph.new(:body => text_or_sub_array, :heading => heading)
         when Array

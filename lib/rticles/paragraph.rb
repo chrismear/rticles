@@ -41,17 +41,30 @@ module Rticles
       ancestors.length + (heading ? heading : 0)
     end
 
-    def index
+    def index(choices=nil)
       return nil if heading? || continuation?
-      position - higher_items.where(['heading >= 1 OR continuation = ?', true]).count
+
+      predecessors = higher_items.where(['(heading = 0 OR heading IS NULL) AND (continuation = ? OR continuation IS NULL)', false])
+
+      if choices.present?
+        choices_condition = ["", {}]
+        choices.each do |k, v|
+          choices_condition[0] += "AND body NOT LIKE :#{k}"
+          choices_condition[1][k.to_sym] = "#rticles##{v ? 'false' : 'true'}##{k}%"
+        end
+        choices_condition[0].sub!(/\AAND /, '')
+        predecessors = predecessors.where(choices_condition)
+      end
+
+      predecessors.count + 1
     end
 
-    def full_index(recalculate=false)
+    def full_index(recalculate=false, choices=nil)
       return nil if heading? || continuation?
 
       return @full_index if @full_index && !recalculate
 
-      @full_index = ancestors.unshift(self).reverse.map(&:index).join('.')
+      @full_index = ancestors.unshift(self).reverse.map{|p| p.index(choices)}.join('.')
     end
 
     def ancestors
@@ -146,7 +159,7 @@ module Rticles
       result = resolve_references(result, with_meta_characters)
       result = resolve_insertions(result)
 
-      if options[:with_index] && full_index
+      if options[:with_index] && full_index(true, choices)
         result = "#{full_index} #{result}"
       end
 

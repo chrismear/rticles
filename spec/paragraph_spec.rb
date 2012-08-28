@@ -176,6 +176,10 @@ describe Rticles::Paragraph do
       @document.top_level_paragraphs.create(:body => 'one')
       @document.top_level_paragraphs.create(:body => 'Heading one', :heading => 1)
       @document.top_level_paragraphs.create(:body => 'two')
+      @document.top_level_paragraphs.create(:body => '#rticles#false#choice Optional paragraph')
+      @document.top_level_paragraphs.create(:body => 'three')
+
+      @document.choices[:choice] = true
     end
 
     it "ignores headings" do
@@ -185,6 +189,10 @@ describe Rticles::Paragraph do
 
     it "returns nil for headings" do
       @document.paragraphs[1].index.should be_nil
+    end
+
+    it "ignores paragraphs omitted by choices" do
+      @document.paragraphs[4].index(@document.choices).should eq 3
     end
   end
 

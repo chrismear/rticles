@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120828132646) do
+ActiveRecord::Schema.define(:version => 20120828180131) do
 
   create_table "documents", :force => true do |t|
     t.string   "title"
@@ -25,8 +25,9 @@ ActiveRecord::Schema.define(:version => 20120828132646) do
     t.integer  "parent_id"
     t.integer  "document_id"
     t.integer  "heading"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.boolean  "continuation"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
   end
 
 end

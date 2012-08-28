@@ -10,6 +10,7 @@ class CreateDocumentsAndParagraphs < ActiveRecord::Migration
       t.integer 'parent_id'
       t.integer 'document_id'
       t.integer 'heading'
+      t.boolean 'continuation'
       t.timestamps
     end
   end

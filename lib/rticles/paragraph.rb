@@ -2,7 +2,7 @@ require 'acts_as_list'
 
 module Rticles
   class Paragraph < ActiveRecord::Base
-    attr_accessible :body, :parent_id, :after_id, :position, :before_id, :heading
+    attr_accessible :body, :parent_id, :after_id, :position, :before_id, :heading, :continuation
 
     belongs_to :document
     belongs_to :parent, :class_name => 'Paragraph'
@@ -42,7 +42,7 @@ module Rticles
 
     def index
       return nil if heading?
-      position - higher_items.where(['heading >= 1']).count
+      position - higher_items.where(['heading >= 1 OR continuation = ?', true]).count
     end
 
     def full_index

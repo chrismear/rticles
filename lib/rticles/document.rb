@@ -2,6 +2,7 @@ require 'yaml'
 
 module Rticles
   class Document < ActiveRecord::Base
+    CONTINUATION_RE = /\A#rticles#continue /
     HEADING_RE = /\A#rticles#heading(#\d+|) /
 
     has_many :paragraphs, :order => 'position'
@@ -58,6 +59,14 @@ module Rticles
       array.each do |text_or_sub_array|
         case text_or_sub_array
         when String
+          continuation = false
+          heading = nil
+
+          if text_or_sub_array.match(CONTINUATION_RE)
+            text_or_sub_array = text_or_sub_array.sub(CONTINUATION_RE, '')
+            continuation = true
+          end
+
           if heading_match = text_or_sub_array.match(HEADING_RE)
             text_or_sub_array = text_or_sub_array.sub(HEADING_RE, '')
             if heading_match[1].empty?
@@ -65,10 +74,12 @@ module Rticles
             else
               heading = heading_match[1].sub(/\A#/, '').to_i
             end
-          else
-            heading = nil
           end
-          paragraphs_relation << Rticles::Paragraph.new(:body => text_or_sub_array, :heading => heading)
+          paragraphs_relation << Rticles::Paragraph.new(
+            :body => text_or_sub_array,
+            :heading => heading,
+            :continuation => continuation
+          )
         when Array
           if paragraphs_relation.empty?
             raise RuntimeError, "jump in nesting at: #{text_or_sub_array.first}"

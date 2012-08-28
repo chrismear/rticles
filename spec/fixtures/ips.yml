@@ -2,7 +2,7 @@
 - "#rticles#heading Industrial and Provident Societies Act 1965"
 - "#rticles#heading Rules of"
 - "#rticles#heading #rticles#organisation_name Limited"
-- "#artices#heading Name"
+- "#rticles#heading Name"
 - "The name of the society shall be #rticles#organisation_name Limited."
 - "#rticles#heading Registered Office"
 - "The registered office of the society shall be at"
@@ -15,58 +15,58 @@
       <dt>"the Act"</dt>
       <dd>refers to the Industrial and Provident Societies Act 1965 or any Act or Acts amending or in substitution of it or them for the time being in force;</dd>
       <dt>"Auditor"</dt>
-     \ <dd>means a person eligible for appointment as a company auditor under section 25 of the Companies Act 1989;</dd>
+      <dd>means a person eligible for appointment as a company auditor under section 25 of the Companies Act 1989;</dd>
       <dt>"The Board of Directors" or "Board"</dt>
-     \ <dd>means all those persons appointed to perform the duties of directors of the society;</dd>
+      <dd>means all those persons appointed to perform the duties of directors of the society;</dd>
       <dt>"Board Meeting"</dt>
       <dd>includes, except where inconsistent with any legal obligation a physical meeting, a meeting held by electronic means and a meeting held by telephone;</dd>
       <dt>"Clear Days"</dt>
       <dd>in relation to the period of notice does not include the day on which the meeting is to be held and the day on which the notice is handed to someone or left at their Address, or the day on which it is sent, is in the process of being sent and is assumed to be delivered;</dd>
       <dt>"Co-operative"</dt>
       <dd>means the above-named society;</dd>
-     \ <dt>"Co-operative Principles"</dt>
+      <dt>"Co-operative Principles"</dt>
       <dd>are the principles defined in the International Co-operative Alliance Statement of Co operative Identity. The principles are those of voluntary and open membership, democratic member control, member economic participation, autonomy and independence, education, training and information, co-operation among co operatives and concern for the community;</dd>
       <dt>"Digital Platform"</dt>
-     \ <dd>means the computer system or systems employed to permit electronic transactions under these rules;</dd>
+      <dd>means the computer system or systems employed to permit electronic transactions under these rules;</dd>
       <dt>"Director"</dt>
       <dd>means a director of the Co-operative and includes any person occupying the position of director, by whatever name called;</dd>
       <dt>"Document"</dt>
       <dd>includes, unless otherwise stated, any document sent or supplied in electronic form;</dd>
       <dt>"Electronic Means"</dt>
-     \ <dd>shall include, for example, email, video links and secure authenticated website transactions;</dd>
+      <dd>shall include, for example, email, video links and secure authenticated website transactions;</dd>
       <dt>"Electronic Vote"</dt>
       <dd>means a vote taken using the Digital Platform, including any vote of the Members, the Board or any subcommittee;</dd>
-     \ <dt>"Employee"</dt>
+      <dt>"Employee"</dt>
       <dd>means anyone over the age of 16 holding a contract of employment with the Co operative;</dd>
       <dt>"Extraordinary Resolution"</dt>
-     \ <dd>means, unless the context requires otherwise, those decisions requiring an Extraordinary Resolution as detailed under 'Resolutions' in these rules;</dd>
-     \ <dt>"Founder Member"</dt>
+      <dd>means, unless the context requires otherwise, those decisions requiring an Extraordinary Resolution as detailed under 'Resolutions' in these rules;</dd>
+      <dt>"Founder Member"</dt>
       <dd>means a subscriber to these rules for the purposes of registration;</dd>
       <dt>"Member"</dt>
       <dd>has the meaning as detailed under 'Membership' in these rules;</dd>
       <dt>"Office Holder"</dt>
       <dd>means a receiver, administrative receiver, liquidator, provisional liquidator or administrator of a Member of all or substantially all of the Member's assets;</dd>
       <dt>"Officer"</dt>
-     \ <dd>has the meaning as detailed under 'Officers' in these rules;</dd>
+      <dd>has the meaning as detailed under 'Officers' in these rules;</dd>
       <dt>"Person"</dt>
-     \ <dd>means, unless the context requires otherwise, a natural person, unincorporated body, firm, partnership, corporate body or the nominee of an unincorporated body, firm, partnership or corporate body;</dd>
+      <dd>means, unless the context requires otherwise, a natural person, unincorporated body, firm, partnership, corporate body or the nominee of an unincorporated body, firm, partnership or corporate body;</dd>
       <dt>"Registrar"</dt>
       <dd>means the Financial Services Authority (FSA) or any body that succeeds its function;</dd>
-     \ <dt>"Regulations"</dt>
+      <dt>"Regulations"</dt>
       <dd>has the meaning as detailed under 'Regulations' in these rules;</dd>
       <dt>"Rules"</dt>
       <dd>means these Rules;</dd>
       <dt>"Secretary"</dt>
-     \ <dd>means any person appointed to perform the duties of the Secretary of the Co operative;</dd>
+      <dd>means any person appointed to perform the duties of the Secretary of the Co operative;</dd>
       <dt>"Transferable"</dt>
       <dd>means shares that are transferable to another Person who also qualifies for membership of the Co-operative in accordance with these Rules;</dd>
       <dt>"User"</dt>
       <dd>means those persons admitted into membership under these Rules that wish to use the services of the Co-operative and have agreed to pay any subscription or other sum due in respect of membership for the use of the Co-operative's services;</dd>
       <dt></dt>
       <dd>Voting Method" means the method prescribed as to the manner in which votes may be cast and then used to determine who is to be elected in any election of members of the Board.</dd>
-     \ <dt>"Withdrawable"</dt>
+      <dt>"Withdrawable"</dt>
       <dd>means shares with the associated right for the Member to withdraw and receive in return the value of their shares from the Co-operative;</dd>
-     \ <dt>"Writing"</dt>
+      <dt>"Writing"</dt>
       <dd>means the representation or reproduction of words, symbols or other information in a visible form by any method or combination of methods, whether sent or supplied by Electronic Means or otherwise.</dd>
       </dl>
 - "#rticles#heading Purpose"
@@ -240,7 +240,7 @@
   - "All other decisions shall be made by ordinary resolution."
 - "An Extraordinary Resolution is one passed by a majority of not less than 75% of votes cast at a general meeting and an ordinary resolution is one passed by a simple majority (51%) of votes cast."
 - "Resolutions may be passed at general meetings or by written resolution.  A written resolution may consist of several identical Documents signed by one or more Members."
-- "#rticles#heading2 Electronic Resolutions"
+- "#rticles#heading#2 Electronic Resolutions"
 - "Resolutions may be passed by Members by means of an electronic vote using the Digital Platform."
 - "An Electronic Vote on a Resolution may be initiated either by:"
 -

@@ -9,6 +9,7 @@ class CreateDocumentsAndParagraphs < ActiveRecord::Migration
       t.integer 'position'
       t.integer 'parent_id'
       t.integer 'document_id'
+      t.boolean 'heading', :default => false
       t.timestamps
     end
   end

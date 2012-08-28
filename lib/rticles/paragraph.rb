@@ -2,7 +2,7 @@ require 'acts_as_list'
 
 module Rticles
   class Paragraph < ActiveRecord::Base
-    attr_accessible :body, :parent_id, :after_id, :position, :before_id
+    attr_accessible :body, :parent_id, :after_id, :position, :before_id, :heading
 
     belongs_to :document
     belongs_to :parent, :class_name => 'Paragraph'
@@ -30,6 +30,11 @@ module Rticles
         self.update_attribute(:parent_id, sibling.parent_id)
         insert_at(self.class.find(after_id).position + 1)
       end
+    end
+
+    def index
+      return nil if heading?
+      position - higher_items.where(['heading = ?', true]).count
     end
 
     def full_index
@@ -75,6 +80,13 @@ module Rticles
       remove_from_list
       update_attribute(:parent_id, new_parent_id)
       insert_at(new_position)
+    end
+
+    def higher_items
+      return nil unless in_list?
+      acts_as_list_class.where(
+        "#{scope_condition} AND #{position_column} < #{(send(position_column).to_i).to_s}"
+      )
     end
 
     def lower_items

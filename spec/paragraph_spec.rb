@@ -169,4 +169,22 @@ describe Rticles::Paragraph do
       @document.reload.outline.should == ['one', ['sub_one'], 'sub_two', ['sub_three'], 'two']
     end
   end
+
+  describe "index" do
+    before(:each) do
+      @document = Rticles::Document.create
+      @document.top_level_paragraphs.create(:body => 'one')
+      @document.top_level_paragraphs.create(:body => 'Heading one', :heading => true)
+      @document.top_level_paragraphs.create(:body => 'two')
+    end
+
+    it "ignores headings" do
+      @document.paragraphs[0].index.should eq 1
+      @document.paragraphs[2].index.should eq 2
+    end
+
+    it "returns nil for headings" do
+      @document.paragraphs[1].index.should be_nil
+    end
+  end
 end

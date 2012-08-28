@@ -30,14 +30,17 @@ module Rticles
       self.choices = choices.with_indifferent_access
     end
 
-    def outline(for_display=false)
+    def outline(options={})
+      options = options.with_indifferent_access
+      for_display = options[:for_display]
+
       o = []
       top_level_paragraphs.each do |tlp|
-        body = for_display ? tlp.body_for_display(:insertions => insertions, :choices => choices) : tlp.body
+        body = for_display ? tlp.body_for_display({:insertions => insertions, :choices => choices}.merge(options)) : tlp.body
         if body
-          o.push(for_display ? tlp.body_for_display(:insertions => insertions, :choices => choices) : tlp.body)
+          o.push(for_display ? tlp.body_for_display({:insertions => insertions, :choices => choices}.merge(options)) : tlp.body)
           unless tlp.children.empty?
-            o.push(sub_outline(tlp, for_display))
+            o.push(sub_outline(tlp, options))
           end
         end
       end
@@ -120,14 +123,17 @@ module Rticles
 
   protected
 
-    def sub_outline(p, for_display=false)
+    def sub_outline(p, options={})
+      options = options.with_indifferent_access
+      for_display = options[:for_display]
+
       o = []
       p.children.each do |c|
-        body = for_display ? c.body_for_display(:insertions => insertions, :choices => choices) : c.body
+        body = for_display ? c.body_for_display({:insertions => insertions, :choices => choices}.merge(options)) : c.body
         if body
           o.push(body)
           unless c.children.empty?
-            o.push(sub_outline(c, for_display))
+            o.push(sub_outline(c, options))
           end
         end
       end

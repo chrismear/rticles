@@ -128,6 +128,8 @@ module Rticles
     end
 
     def body_for_display(options={})
+      options = options.with_indifferent_access
+
       if options[:insertions]
         @insertions = options[:insertions]
       end

@@ -61,7 +61,7 @@ describe Rticles::Document do
     describe "insertion" do
       it "is displayed" do
         @document.insertions = {:organisation_name => "The One Click Orgs Association"}
-        @document.outline(true)[0].should ==
+        @document.outline(:for_display => true)[0].should ==
           "This is the constitution (\"Constitution\") of The One Click Orgs Association. (\"The Organisation\")"
       end
     end
@@ -69,7 +69,7 @@ describe Rticles::Document do
     describe "choice" do
       it "is displayed" do
         @document.choices = {:assets => true}
-        @document.outline(true)[2].should ==
+        @document.outline(:for_display => true)[2].should ==
           "The Organisation may hold, transfer and dispose of material assets and intangible assets."
       end
     end
@@ -87,7 +87,7 @@ describe Rticles::Document do
       @document.choices = {
         :assets => true
       }
-      @document.outline(true).should == [
+      @document.outline(:for_display => true).should == [
         "This is the constitution (\"Constitution\") of The One Click Orgs Association. (\"The Organisation\")",
         "The Organisation has the objectives of developing OCO. (\"Objectives\")",
         "The Organisation may hold, transfer and dispose of material assets and intangible assets.",

@@ -36,12 +36,17 @@ module Rticles
       heading && heading > 0
     end
 
+    def heading_level
+      ancestors.length + (heading ? heading : 0)
+    end
+
     def index
       return nil if heading?
       position - higher_items.where(['heading >= 1']).count
     end
 
     def full_index
+      return nil if heading?
       ancestors.unshift(self).reverse.map(&:position).join('.')
     end
 

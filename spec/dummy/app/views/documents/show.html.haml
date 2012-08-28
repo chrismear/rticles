@@ -1,7 +1,6 @@
 %h1= @document.title
-%ol
-  - @document.top_level_paragraphs.each do |paragraph|
-    = render :partial => 'paragraphs/paragraph', :object => paragraph
+
+= @document.to_html
 
 %p
   = link_to "Edit this document", edit_document_path(:id => @document)

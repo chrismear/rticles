@@ -19,6 +19,7 @@ class DocumentsController < ApplicationController
 
   def show
     @document = Rticles::Document.find(params[:id])
+
     if params[:choices]
       choices = {}
       params[:choices].each do |k, v|
@@ -26,9 +27,21 @@ class DocumentsController < ApplicationController
       end
       @document.choices = choices
     end
+
     if params[:insertions]
       @document.insertions = params[:insertions]
     end
+
+    # Some non-standard numbering set-up, for demonstration
+    @document.numbering_config.innermost_only = true
+
+    @document.numbering_config[1].format = '#.'
+
+    @document.numbering_config[2].style = Rticles::Numbering::LOWER_ALPHA
+    @document.numbering_config[2].format = '(#)'
+
+    @document.numbering_config[3].style = Rticles::Numbering::LOWER_ROMAN
+    @document.numbering_config[3].format = '(#)'
   end
 
   def edit

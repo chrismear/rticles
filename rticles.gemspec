@@ -17,6 +17,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency "rails", "~> 3.2.8"
   s.add_dependency "acts_as_list", "~>0.1.8"
+  s.add_dependency "roman-numerals", "~>0.3.0"
 
   s.add_development_dependency "sqlite3"
   s.add_development_dependency "rspec-rails"

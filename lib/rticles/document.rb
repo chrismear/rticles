@@ -141,6 +141,10 @@ module Rticles
       end
     end
 
+    def numbering_config
+      @numbering_config ||= Rticles::Numbering::Config.new
+    end
+
   protected
 
     def consolidate_paragraph_numbers(numbers)

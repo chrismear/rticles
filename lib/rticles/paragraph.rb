@@ -51,6 +51,10 @@ module Rticles
       ancestors.length + (heading ? heading : 0)
     end
 
+    def level
+      ancestors.length + 1
+    end
+
     def index(choices=nil)
       return nil if heading? || continuation?
 
@@ -63,12 +67,19 @@ module Rticles
       predecessors.count + 1
     end
 
-    def full_index(recalculate=false, choices=nil)
+    def full_index(recalculate=false, choices=nil, numbering_config=Rticles::Numbering::Config.new)
       return nil if heading? || continuation?
 
       return @full_index if @full_index && !recalculate
 
-      @full_index = ancestors.unshift(self).reverse.map{|p| p.index(choices)}.join('.')
+      if numbering_config.innermost_only
+        @full_index = numbering_config[level].format.sub('#', Rticles::Numbering.number_to_string(index(choices), numbering_config[level].style))
+      else
+        @full_index = ancestors.unshift(self).reverse.map do |p|
+          numbering_config[p.level].format.sub('#', Rticles::Numbering.number_to_string(p.index(choices), numbering_config[p.level].style))
+        end
+        @full_index = @full_index.join(numbering_config.separator)
+      end
     end
 
     def ancestors

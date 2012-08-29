@@ -4,6 +4,8 @@ require 'spec_helper'
 
 describe Rticles::Document do
 
+  include DocumentMacros
+
   describe ".from_yaml" do
     it "works with sub-paragraphs" do
       yaml = File.open('spec/fixtures/simple.yml', 'r')
@@ -148,6 +150,43 @@ describe Rticles::Document do
 
       @document.choices[:single_shareholding] = false
       @document.paragraph_numbers_for_topic('shares', true).should eq "35–40"
+    end
+  end
+
+  describe "numbering config" do
+    before(:each) do
+      stub_outline([:one, [:sub_one, :sub_two, [:sub_sub_one, :sub_sub_two, :sub_sub_three], :sub_three], :two])
+      @paragraph = @document.paragraphs.where(:body => :sub_sub_three).first
+    end
+
+    it "defaults to full decimal numbering" do
+      @paragraph.full_index.should eq "1.2.3"
+    end
+
+    it "allows customisation of the separator" do
+      @document.numbering_config.separator = ' '
+      @paragraph.full_index(true, nil, @document.numbering_config).should eq "1 2 3"
+    end
+
+    it "allows customisation of the list style type" do
+      @document.numbering_config[1].style = Rticles::Numbering::DECIMAL
+      @document.numbering_config[2].style = Rticles::Numbering::LOWER_ALPHA
+      @document.numbering_config[3].style = Rticles::Numbering::LOWER_ROMAN
+
+      @paragraph.full_index(true, nil, @document.numbering_config).should eq "1.b.iii"
+    end
+
+    it "allows customisation of the number format" do
+      @document.numbering_config.separator = ' '
+
+      @document.numbering_config[2].format = '(#)'
+
+      @paragraph.full_index(true, nil, @document.numbering_config).should eq "1 (2) 3"
+    end
+
+    it "allows setting only the innermost number should be printed" do
+      @document.numbering_config.innermost_only = true
+      @paragraph.full_index(true, nil, @document.numbering_config).should eq "3"
     end
   end
 

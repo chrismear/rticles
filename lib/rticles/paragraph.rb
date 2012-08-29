@@ -67,10 +67,14 @@ module Rticles
       predecessors.count + 1
     end
 
-    def full_index(recalculate=false, choices=nil, numbering_config=Rticles::Numbering::Config.new)
+    def full_index(recalculate=false, choices=nil, numbering_config=nil)
       return nil if heading? || continuation?
 
       return @full_index if @full_index && !recalculate
+
+      if numbering_config.nil?
+        numbering_config = Rticles::Numbering::Config.new
+      end
 
       if numbering_config.innermost_only
         @full_index = numbering_config[level].format.sub('#', Rticles::Numbering.number_to_string(index(choices), numbering_config[level].style))
@@ -174,7 +178,7 @@ module Rticles
       result = resolve_references(result, with_meta_characters)
       result = resolve_insertions(result)
 
-      if options[:with_index] && full_index(true, choices)
+      if options[:with_index] && full_index(true, choices, options[:numbering_config])
         result = "#{full_index} #{result}"
       end
 

@@ -51,7 +51,11 @@ module Rticles
 
     def to_html
       html = "<section>"
-      html += Rticles::Paragraph.generate_html(top_level_paragraphs, :insertions => insertions, :choices => choices)
+      html += Rticles::Paragraph.generate_html(top_level_paragraphs,
+        :insertions => insertions,
+        :choices => choices,
+        :numbering_config => numbering_config
+      )
       html += "</section>"
       html.html_safe
     end

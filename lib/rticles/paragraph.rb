@@ -11,6 +11,16 @@ module Rticles
 
     acts_as_list :scope => [:document_id, :parent_id]
 
+    scope :for_choices, lambda {|choices|
+        choices_condition = ["", {}]
+        choices.each do |k, v|
+          choices_condition[0] += "AND body NOT LIKE :#{k}"
+          choices_condition[1][k.to_sym] = "#rticles##{v ? 'false' : 'true'}##{k}%"
+        end
+        choices_condition[0].sub!(/\AAND /, '')
+        where(choices_condition)
+    }
+
     before_create :set_document_id
     def set_document_id
       if parent
@@ -47,13 +57,7 @@ module Rticles
       predecessors = higher_items.where(['(heading = 0 OR heading IS NULL) AND (continuation = ? OR continuation IS NULL)', false])
 
       if choices.present?
-        choices_condition = ["", {}]
-        choices.each do |k, v|
-          choices_condition[0] += "AND body NOT LIKE :#{k}"
-          choices_condition[1][k.to_sym] = "#rticles##{v ? 'false' : 'true'}##{k}%"
-        end
-        choices_condition[0].sub!(/\AAND /, '')
-        predecessors = predecessors.where(choices_condition)
+        predecessors = predecessors.for_choices(choices)
       end
 
       predecessors.count + 1

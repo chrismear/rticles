@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require 'yaml'
 
 module Rticles
@@ -127,7 +129,48 @@ module Rticles
       paragraphs.all.detect{|p| p.full_index == raw_reference}
     end
 
+    def paragraph_numbers_for_topic(topic, consolidate=false)
+      relevant_paragraphs = paragraphs.where(:topic => topic)
+      relevant_paragraphs = relevant_paragraphs.for_choices(choices)
+      paragraph_numbers = relevant_paragraphs.map{|p| p.full_index(true, choices)}.select{|i| !i.nil?}.sort
+
+      if consolidate
+        consolidate_paragraph_numbers(paragraph_numbers)
+      else
+        paragraph_numbers.join(', ')
+      end
+    end
+
   protected
+
+    def consolidate_paragraph_numbers(numbers)
+      numbers = numbers.sort
+      consolidated_numbers = []
+      current_run = []
+      numbers.each do |n|
+        if current_run.empty? || is_adjacent?(current_run.last, n)
+          current_run.push(n)
+        else
+          if current_run.length == 1
+            consolidated_numbers.push(current_run[0])
+          else
+            consolidated_numbers.push("#{current_run[0]}–#{current_run[-1]}")
+          end
+          current_run = [n]
+        end
+      end
+      if current_run.length == 1
+        consolidated_numbers.push(current_run[0])
+      else
+        consolidated_numbers.push("#{current_run[0]}–#{current_run[-1]}")
+      end
+      consolidated_numbers.join(', ')
+    end
+
+    def is_adjacent?(a, b)
+      # TODO Make this smart enough to handle sub-numbers like '2.4', '2.6'
+      b.to_i == a.to_i + 1
+    end
 
     def sub_outline(p, options={})
       options = options.with_indifferent_access

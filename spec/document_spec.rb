@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require 'spec_helper'
 
 describe Rticles::Document do
@@ -117,6 +119,35 @@ describe Rticles::Document do
         ],
         "Members may view all Decisions on the Governance System."
       ]
+    end
+  end
+
+  describe "topic lookup" do
+    it "takes into account the current choices" do
+      @document = Rticles::Document.create
+      @document.top_level_paragraphs.create(:body => "First rule.")
+      @document.top_level_paragraphs.create(:body => "#rticles#true#single_shareholding Members may only hold a single share.", :topic => 'shares')
+      @document.top_level_paragraphs.create(:body => "#rticles#false#single_shareholding Members may only multiple shares.", :topic => 'shares')
+      @document.top_level_paragraphs.create(:body => "#rticles#false#single_shareholding Shares may be applied for and withdrawn at any time", :topic => 'shares')
+      @document.top_level_paragraphs.create(:body => "Some other rule.")
+      @document.top_level_paragraphs.create(:body => "The company must keep a record of shareholdings.", :topic => 'shares')
+
+      @document.choices[:single_shareholding] = true
+      @document.paragraph_numbers_for_topic('shares', true).should eq "2, 4"
+
+      @document.choices[:single_shareholding] = false
+      @document.paragraph_numbers_for_topic('shares', true).should eq "2–3, 5"
+    end
+
+    it "works for a complex document" do
+      yaml = File.open('spec/fixtures/ips.yml', 'r')
+      @document = Rticles::Document.from_yaml(yaml)
+
+      @document.choices[:single_shareholding] = true
+      @document.paragraph_numbers_for_topic('shares', true).should eq "32"
+
+      @document.choices[:single_shareholding] = false
+      @document.paragraph_numbers_for_topic('shares', true).should eq "35–40"
     end
   end
 

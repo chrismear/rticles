@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
   s.homepage    = "https://github.com/oneclickorgs/rticles"
   s.summary     = "Consistent editing for legal documents."
   s.description = "Rticles is a Rails plugin that allows for web-based editing of legal documents. It lets you create nested, numbered paragraphs, along with intra-document references that remain accurate as paragraphs are inserted, removed and moved."
+  s.licenses    = ['AGPL-3']
 
   s.files       = `git ls-files`.split($\)
 

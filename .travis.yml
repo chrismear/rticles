@@ -3,3 +3,5 @@ rvm:
   - 1.8.7
   - 1.9.3
   - 2.0.0
+before_script:
+  "pushd spec/dummy && RAILS_ENV=test bundle exec rake db:create; popd"

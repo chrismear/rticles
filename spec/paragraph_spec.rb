@@ -248,6 +248,84 @@ describe Rticles::Paragraph do
       html.should be_equivalent_to(expected_html)
     end
 
+    context "with choices" do
+      before(:each) do
+        @document.top_level_paragraphs.create(
+          :body => "#rticles#true#free_cake All members shall be entitled to free cake",
+          :after_id => @document.top_level_paragraphs.all[4].id
+        )
+      end
+
+      it "includes the 'true' clause when the choice is set to true" do
+        expected_html = <<-EOF
+        <section>
+          <hgroup>
+            <h1>A Simple Constitution</h1>
+            <h2>For demonstration purposes only</h2>
+          </hgroup>
+          <ol>
+            <li value="1">1 This is the first rule.</li>
+            <li value="2">
+              2 This is the second rule, which applies when:
+              <ol>
+                <li value="1">2.1 This condition;</li>
+                <li value="2">2.2 and this condition.</li>
+              </ol>
+              except when it is a Full Moon.
+            </li>
+            <li value="3">3 All members shall be entitled to free cake</li>
+            <li value="4">4 This is the third rule.</li>
+            <li value="5">5 This is the fourth rule.</li>
+          </ol>
+          <h2>And finally...</h2>
+          <ol>
+            <li value="6">6 This is the final rule.</li>
+          </ol>
+        </section>
+        EOF
+
+        @document.choices = {:free_cake => true}
+
+        html = @document.to_html
+
+        html.should be_equivalent_to(expected_html)
+      end
+
+      it "excludes the 'true' clause when the choice is set to false" do
+        expected_html = <<-EOF
+        <section>
+          <hgroup>
+            <h1>A Simple Constitution</h1>
+            <h2>For demonstration purposes only</h2>
+          </hgroup>
+          <ol>
+            <li value="1">1 This is the first rule.</li>
+            <li value="2">
+              2 This is the second rule, which applies when:
+              <ol>
+                <li value="1">2.1 This condition;</li>
+                <li value="2">2.2 and this condition.</li>
+              </ol>
+              except when it is a Full Moon.
+            </li>
+            <li value="3">3 This is the third rule.</li>
+            <li value="4">4 This is the fourth rule.</li>
+          </ol>
+          <h2>And finally...</h2>
+          <ol>
+            <li value="5">5 This is the final rule.</li>
+          </ol>
+        </section>
+        EOF
+
+        @document.choices = {:free_cake => false}
+
+        html = @document.to_html
+
+        html.should be_equivalent_to(expected_html)
+      end
+    end
+
     context "without indexes" do
       it "works" do
         expected_html = <<-EOF

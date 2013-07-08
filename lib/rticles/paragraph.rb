@@ -5,6 +5,8 @@ module Rticles
     attr_accessible :body, :parent_id, :after_id, :position, :before_id, :heading, :continuation,
       :name, :topic
 
+    attr_writer :choices
+
     belongs_to :document
     belongs_to :parent, :class_name => 'Paragraph'
     has_many :children, :class_name => 'Paragraph', :foreign_key => 'parent_id', :order => 'position', :dependent => :destroy
@@ -267,14 +269,22 @@ module Rticles
           unless previous_type == :paragraph
             memo += "<ol>"
           end
-          if paragraph_group[0] && !paragraph_group[0].heading?
-            index = paragraph_group[0].index
-          else
-            index = nil
+          
+          # Skip this paragraph entirely if the choices mean it should not be displayed.
+          first_paragraph = paragraph_group[0]
+          first_paragraph.choices = options[:choices]
+          if first_paragraph.resolve_choices(first_paragraph.body)
+
+            if first_paragraph.heading?
+              index = nil
+            else
+              index = first_paragraph.index(options[:choices])
+            end
+            li_opening_tag = index ? "<li value=\"#{index}\">" : "<li>"
+            memo += "#{li_opening_tag}#{generate_html_for_paragraphs(paragraph_group, options)}</li>"
+            previous_type = :paragraph
+
           end
-          li_opening_tag = index ? "<li value=\"#{index}\">" : "<li>"
-          memo += "#{li_opening_tag}#{generate_html_for_paragraphs(paragraph_group, options)}</li>"
-          previous_type = :paragraph
         end
         memo
       end

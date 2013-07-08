@@ -267,7 +267,13 @@ module Rticles
           unless previous_type == :paragraph
             memo += "<ol>"
           end
-          memo += "<li>#{generate_html_for_paragraphs(paragraph_group, options)}</li>"
+          if paragraph_group[0] && !paragraph_group[0].heading?
+            index = paragraph_group[0].index
+          else
+            index = nil
+          end
+          li_opening_tag = index ? "<li value=\"#{index}\">" : "<li>"
+          memo += "#{li_opening_tag}#{generate_html_for_paragraphs(paragraph_group, options)}</li>"
           previous_type = :paragraph
         end
         memo

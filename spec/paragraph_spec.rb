@@ -224,21 +224,21 @@ describe Rticles::Paragraph do
           <h2>For demonstration purposes only</h2>
         </hgroup>
         <ol>
-          <li>1 This is the first rule.</li>
-          <li>
+          <li value="1">1 This is the first rule.</li>
+          <li value="2">
             2 This is the second rule, which applies when:
             <ol>
-              <li>2.1 This condition;</li>
-              <li>2.2 and this condition.</li>
+              <li value="1">2.1 This condition;</li>
+              <li value="2">2.2 and this condition.</li>
             </ol>
             except when it is a Full Moon.
           </li>
-          <li>3 This is the third rule.</li>
-          <li>4 This is the fourth rule.</li>
+          <li value="3">3 This is the third rule.</li>
+          <li value="4">4 This is the fourth rule.</li>
         </ol>
         <h2>And finally...</h2>
         <ol>
-          <li>5 This is the final rule.</li>
+          <li value="5">5 This is the final rule.</li>
         </ol>
       </section>
       EOF

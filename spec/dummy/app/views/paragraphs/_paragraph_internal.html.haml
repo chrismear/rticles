@@ -4,7 +4,7 @@
       = content_tag("h#{paragraph.heading_level}") do
         = paragraph.body_for_display
     - else
-      = simple_format(paragraph.full_index + ' ' + paragraph.body_for_display)
+      = simple_format((paragraph.full_index || '') + ' ' + (paragraph.body_for_display || ''))
     - if @editing
       %p.control
         = link_to "Edit", edit_document_paragraph_path(:document_id => paragraph.document, :id => paragraph), :class => 'edit_paragraph'

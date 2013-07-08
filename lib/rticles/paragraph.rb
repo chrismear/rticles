@@ -16,7 +16,7 @@ module Rticles
     scope :for_choices, lambda {|choices|
         choices_condition = ["", {}]
         choices.each do |k, v|
-          choices_condition[0] += "AND body NOT LIKE :#{k}"
+          choices_condition[0] += "AND body NOT LIKE :#{k} "
           choices_condition[1][k.to_sym] = "#rticles##{v ? 'false' : 'true'}##{k}%"
         end
         choices_condition[0].sub!(/\AAND /, '')

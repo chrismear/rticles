@@ -247,5 +247,39 @@ describe Rticles::Paragraph do
 
       html.should be_equivalent_to(expected_html)
     end
+
+    context "without indexes" do
+      it "works" do
+        expected_html = <<-EOF
+        <section>
+          <hgroup>
+            <h1>A Simple Constitution</h1>
+            <h2>For demonstration purposes only</h2>
+          </hgroup>
+          <ol>
+            <li value="1">This is the first rule.</li>
+            <li value="2">
+              This is the second rule, which applies when:
+              <ol>
+                <li value="1">This condition;</li>
+                <li value="2">and this condition.</li>
+              </ol>
+              except when it is a Full Moon.
+            </li>
+            <li value="3">This is the third rule.</li>
+            <li value="4">This is the fourth rule.</li>
+          </ol>
+          <h2>And finally...</h2>
+          <ol>
+            <li value="5">This is the final rule.</li>
+          </ol>
+        </section>
+        EOF
+
+        html = @document.to_html(:with_index => false)
+
+        html.should be_equivalent_to(expected_html)
+      end
+    end
   end
 end

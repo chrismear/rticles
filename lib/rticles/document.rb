@@ -49,12 +49,14 @@ module Rticles
       o
     end
 
-    def to_html
+    def to_html(options={})
       html = "<section>"
       html += Rticles::Paragraph.generate_html(top_level_paragraphs,
-        :insertions => insertions,
-        :choices => choices,
-        :numbering_config => numbering_config
+        {
+          :insertions => insertions,
+          :choices => choices,
+          :numbering_config => numbering_config
+        }.merge(options)
       )
       html += "</section>"
       html.html_safe

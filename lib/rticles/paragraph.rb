@@ -255,36 +255,32 @@ module Rticles
         # FIXME: Don't generate HTML by interpolating into a string;
         # use some standard library function that provides some safe
         # escaping defaults, etc..
-        if paragraph_group.first.heading?
-          if previous_type == :paragraph
-            memo += "</ol>"
-          end
-          if paragraph_group.length == 1
-            memo += generate_html_for_paragraphs(paragraph_group, options)
-          else
-            memo += "<hgroup>#{generate_html_for_paragraphs(paragraph_group, options)}</hgroup>"
-          end
-          previous_type = :heading
-        else
-          unless previous_type == :paragraph
-            memo += "<ol>"
-          end
-          
-          # Skip this paragraph entirely if the choices mean it should not be displayed.
-          first_paragraph = paragraph_group[0]
-          first_paragraph.choices = options[:choices]
-          if first_paragraph.resolve_choices(first_paragraph.body)
 
-            if first_paragraph.heading?
-              index = nil
-            else
-              index = first_paragraph.index(options[:choices])
+        # Skip this paragraph entirely if the choices mean it should not be displayed.
+        first_paragraph = paragraph_group[0]
+        first_paragraph.choices = options[:choices]
+        if first_paragraph.resolve_choices(first_paragraph.body)
+
+          if first_paragraph.heading?
+            if previous_type == :paragraph
+              memo += "</ol>"
             end
-            li_opening_tag = index ? "<li value=\"#{index}\">" : "<li>"
+            if paragraph_group.length == 1
+              memo += generate_html_for_paragraphs(paragraph_group, options)
+            else
+              memo += "<hgroup>#{generate_html_for_paragraphs(paragraph_group, options)}</hgroup>"
+            end
+            previous_type = :heading
+          else
+            unless previous_type == :paragraph
+              memo += "<ol>"
+            end
+            index = first_paragraph.index(options[:choices])
+            li_opening_tag = "<li value=\"#{index}\">"
             memo += "#{li_opening_tag}#{generate_html_for_paragraphs(paragraph_group, options)}</li>"
             previous_type = :paragraph
-
           end
+
         end
         memo
       end

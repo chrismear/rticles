@@ -151,6 +151,17 @@ describe Rticles::Document do
       @document.choices[:single_shareholding] = false
       @document.paragraph_numbers_for_topic('shares', true).should eq "35–40"
     end
+
+    it "can handle multiple topics" do
+      @document = Rticles::Document.create
+      @document.top_level_paragraphs.create(:body => "First shares rule", :topic => 'shares')
+      @document.top_level_paragraphs.create(:body => "Objectives rule", :topic => 'objectives')
+      @document.top_level_paragraphs.create(:body => "Other rule")
+      @document.top_level_paragraphs.create(:body => "Second shares rule", :topic => 'shares')
+
+      @document.paragraph_numbers_for_topics(['shares', 'objectives'], true).should eq '1–2, 4'
+    end
+
   end
 
   describe "numbering config" do

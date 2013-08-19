@@ -136,9 +136,17 @@ module Rticles
     end
 
     def paragraph_numbers_for_topic(topic, consolidate=false)
-      relevant_paragraphs = paragraphs.where(:topic => topic)
-      relevant_paragraphs = relevant_paragraphs.for_choices(choices)
-      paragraph_numbers = relevant_paragraphs.map{|p| p.full_index(true, choices)}.select{|i| !i.nil?}.sort
+      paragraph_numbers_for_topics([topic], consolidate)
+    end
+
+    def paragraph_numbers_for_topics(topics, consolidate=false)
+      paragraph_numbers = topics.inject([]) do |memo, topic|
+        relevant_paragraphs = paragraphs.where(:topic => topic)
+        relevant_paragraphs = relevant_paragraphs.for_choices(choices)
+        memo += relevant_paragraphs.map{|p| p.full_index(true, choices)}.select{|i| !i.nil?}
+      end
+
+      paragraph_numbers.sort!
 
       if consolidate
         consolidate_paragraph_numbers(paragraph_numbers)

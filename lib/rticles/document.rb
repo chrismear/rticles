@@ -140,13 +140,17 @@ module Rticles
     end
 
     def paragraph_numbers_for_topics(topics, consolidate=false)
-      paragraph_numbers = topics.inject([]) do |memo, topic|
-        relevant_paragraphs = paragraphs.where(:topic => topic)
-        relevant_paragraphs = relevant_paragraphs.for_choices(choices)
-        memo += relevant_paragraphs.map{|p| p.full_index(true, choices)}.select{|i| !i.nil?}
-      end
+      relevant_paragraphs = paragraphs.where(:topic => topics)
+      relevant_paragraphs = relevant_paragraphs.for_choices(choices)
+      # TODO Sorting by position won't work properly if the query includes
+      # sub-paragraphs, but it is fine for the common case where only
+      # top-level paragraphs have topics.
+      # We should really be sorting by full_index, but
+      # we don't have a sort function for this yet. (A naive typographical
+      # sort isn't good enough.)
+      relevant_paragraphs = relevant_paragraphs.order('position ASC')
 
-      paragraph_numbers.sort!
+      paragraph_numbers = relevant_paragraphs.map{|p| p.full_index(true, choices)}.select{|i| !i.nil?}
 
       if consolidate
         consolidate_paragraph_numbers(paragraph_numbers)
@@ -162,7 +166,7 @@ module Rticles
   protected
 
     def consolidate_paragraph_numbers(numbers)
-      numbers = numbers.sort
+      # numbers = numbers.sort
       consolidated_numbers = []
       current_run = []
       numbers.each do |n|

@@ -208,7 +208,7 @@ module Rticles
       string.gsub(insertion_re) do |match|
         insertion_name = match.sub('#rticles#', '')
         if insertions[insertion_name].present?
-          insertions[insertion_name]
+          insertions[insertion_name].gsub("\n", "<br>")
         else
           "[#{insertion_name.humanize.upcase}]"
         end

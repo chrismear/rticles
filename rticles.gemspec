@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency "sqlite3"
   s.add_development_dependency "rspec-rails"
-  s.add_development_dependency "nokogiri", "~>1.5.0"
+  s.add_development_dependency "nokogiri"
   s.add_development_dependency "equivalent-xml"
   s.add_development_dependency "coveralls"
 end

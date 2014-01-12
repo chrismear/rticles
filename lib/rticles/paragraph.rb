@@ -3,7 +3,7 @@ require 'acts_as_list'
 module Rticles
   class Paragraph < ActiveRecord::Base
     attr_accessible :body, :parent_id, :after_id, :position, :before_id, :heading, :continuation,
-      :name, :topic
+      :name, :topic, :list
 
     attr_writer :choices
 
@@ -251,39 +251,85 @@ module Rticles
 
     def self.generate_html_for_paragraph_groups(paragraph_groups, options={})
       previous_type = nil
-      html = paragraph_groups.inject("") do |memo, paragraph_group|
+
+      # Remove paragraph groups that should not be displayed, given the choices that have been passed in
+      paragraph_groups = paragraph_groups.map do |pg|
+        first_paragraph = pg[0]
+        first_paragraph.choices = options[:choices]
+        if first_paragraph.resolve_choices(first_paragraph.body)
+          pg
+        else
+          nil
+        end
+      end
+      paragraph_groups = paragraph_groups.compact
+
+      # Handle last paragraph group separately so we can do list punctuation if necessary.
+
+      paragraph_groups_except_last = paragraph_groups[0..-2]
+      last_paragraph_group = paragraph_groups[-1]
+
+      html = paragraph_groups_except_last.inject("") do |memo, paragraph_group|
         # FIXME: Don't generate HTML by interpolating into a string;
         # use some standard library function that provides some safe
         # escaping defaults, etc..
 
-        # Skip this paragraph entirely if the choices mean it should not be displayed.
-        first_paragraph = paragraph_group[0]
-        first_paragraph.choices = options[:choices]
-        if first_paragraph.resolve_choices(first_paragraph.body)
-
-          if first_paragraph.heading?
-            if previous_type == :paragraph
-              memo += "</ol>"
-            end
-            if paragraph_group.length == 1
-              memo += generate_html_for_paragraphs(paragraph_group, options)
-            else
-              memo += "<hgroup>#{generate_html_for_paragraphs(paragraph_group, options)}</hgroup>"
-            end
-            previous_type = :heading
-          else
-            unless previous_type == :paragraph
-              memo += "<ol>"
-            end
-            index = first_paragraph.index(options[:choices])
-            li_opening_tag = "<li value=\"#{index}\">"
-            memo += "#{li_opening_tag}#{generate_html_for_paragraphs(paragraph_group, options)}</li>"
-            previous_type = :paragraph
-          end
-
+        if options[:list]
+          options[:list_punctuation] = ';'
         end
+
+        first_paragraph = paragraph_group[0]
+
+        if first_paragraph.heading?
+          if previous_type == :paragraph
+            memo += "</ol>"
+          end
+          if paragraph_group.length == 1
+            memo += generate_html_for_paragraphs(paragraph_group, options)
+          else
+            memo += "<hgroup>#{generate_html_for_paragraphs(paragraph_group, options)}</hgroup>"
+          end
+          previous_type = :heading
+        else
+          unless previous_type == :paragraph
+            memo += "<ol>"
+          end
+          index = first_paragraph.index(options[:choices])
+          li_opening_tag = "<li value=\"#{index}\">"
+          memo += "#{li_opening_tag}#{generate_html_for_paragraphs(paragraph_group, options)}</li>"
+          previous_type = :paragraph
+        end
+
         memo
       end
+
+      # Process final paragraph group
+      if options[:list]
+        options[:list_punctuation] = '.'
+      end
+
+      first_paragraph = last_paragraph_group[0]
+
+      if first_paragraph.heading?
+        if previous_type == :paragraph
+          html += "</ol>"
+        end
+        if last_paragraph_group.length == 1
+          html += generate_html_for_paragraphs(last_paragraph_group, options)
+        else
+          html += "<hgroup>#{generate_html_for_paragraphs(last_paragraph_group, options)}</hgroup>"
+        end
+        previous_type = :heading
+      else
+        unless previous_type == :paragraph
+          html += "<ol>"
+        end
+        index = first_paragraph.index(options[:choices])
+        li_opening_tag = "<li value=\"#{index}\">"
+        html += "#{li_opening_tag}#{generate_html_for_paragraphs(last_paragraph_group, options)}</li>"
+        previous_type = :paragraph
+      end
+
       if previous_type == :paragraph
         html += "</ol>"
       end
@@ -295,13 +341,13 @@ module Rticles
         return memo if body.nil?
 
         if paragraph.heading?
-          memo += "<h#{paragraph.heading_level}>#{body}</h#{paragraph.heading_level}>"
+          memo += "<h#{paragraph.heading_level}>#{body}#{options[:list_punctuation]}</h#{paragraph.heading_level}>"
         else
-          memo += body
+          memo += "#{body}#{options[:list_punctuation]}"
         end
 
         if !paragraph.children.empty?
-          memo += generate_html(paragraph.children, options)
+          memo += generate_html(paragraph.children, options.merge(list: paragraph.list?, list_punctuation: nil))
         end
         memo
       end

@@ -1,0 +1,5 @@
+- "#rticles#list The Board shall consist of:"
+-
+  - "#rticles#true#users Users"
+  - "#rticles#true#employees Employees"
+  - "#rticles#true#supporters Supporters"

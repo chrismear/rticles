@@ -8,6 +8,7 @@ module Rticles
     TOPIC_RE = /\A#rticles#topic#([A-Za-z_]+) /
     CONTINUATION_RE = /\A#rticles#continue /
     HEADING_RE = /\A#rticles#heading(#\d+|) /
+    LIST_RE = /\A#rticles#list /
 
     has_many :paragraphs, :order => 'position'
     has_many :top_level_paragraphs, :class_name => 'Paragraph', :order => 'position', :conditions => "parent_id IS NULL"
@@ -42,7 +43,7 @@ module Rticles
         if body
           o.push(for_display ? tlp.body_for_display({:insertions => insertions, :choices => choices}.merge(options)) : tlp.body)
           unless tlp.children.empty?
-            o.push(sub_outline(tlp, options))
+            o.push(sub_outline(tlp, options.merge(list: tlp.list?)))
           end
         end
       end
@@ -83,6 +84,7 @@ module Rticles
           topic = nil
           continuation = false
           heading = nil
+          list = false
 
           if name_match = text_or_sub_array.match(NAME_RE)
             text_or_sub_array = text_or_sub_array.sub(NAME_RE, '')
@@ -107,13 +109,20 @@ module Rticles
               heading = heading_match[1].sub(/\A#/, '').to_i
             end
           end
+
+          if text_or_sub_array.match(LIST_RE)
+            text_or_sub_array = text_or_sub_array.sub(LIST_RE, '')
+            list = true
+          end
+
           document.paragraphs.create(
             :parent_id => parent ? parent.id : nil,
             :body => text_or_sub_array,
             :name => name,
             :topic => topic,
             :heading => heading,
-            :continuation => continuation
+            :continuation => continuation,
+            :list => list
           )
         when Array
           paragraphs_relation = parent ? parent.children : document.paragraphs.select{|p| p.parent_id.nil?}
@@ -199,12 +208,27 @@ module Rticles
       for_display = options[:for_display]
 
       o = []
-      p.children.each do |c|
+      last_index = p.children.length - 1
+      p.children.each_with_index do |c, index|
         body = for_display ? c.body_for_display({:insertions => insertions, :choices => choices}.merge(options)) : c.body
         if body
           o.push(body)
           unless c.children.empty?
             o.push(sub_outline(c, options))
+          end
+        end
+      end
+      if options[:list]
+        # Add terminating punctuation to the String elements of o, but making the last one a full stop instead of a semicolon.
+        final_element = true
+        o.reverse_each do |p|
+          if p.is_a?(String)
+            if final_element
+              p.sub!(/\Z/, '.')
+              final_element = false
+            else
+              p.sub!(/\Z/, ';')
+            end
           end
         end
       end

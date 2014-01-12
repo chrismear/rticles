@@ -1,6 +1,6 @@
 module Rticles
   module Generators
-    class InstallGenerator < Rails::Generators::Base
+    class UpdateGenerator < Rails::Generators::Base
       include Rails::Generators::Migration
 
       source_root File.expand_path('../templates', __FILE__)
@@ -11,7 +11,6 @@ module Rticles
       end
 
       def create_migration
-        migration_template 'create_documents_and_paragraphs.rb', 'db/migrate/create_documents_and_paragraphs.rb'
         migration_template 'add_list_to_paragraphs.rb', 'db/migrate/add_list_to_paragraphs.rb'
       end
     end

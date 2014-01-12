@@ -124,6 +124,73 @@ describe Rticles::Document do
     end
   end
 
+  describe "list punctuation" do
+    before(:each) do
+      yaml = File.open('spec/fixtures/list_termination.yml', 'r')
+      @document = Rticles::Document.from_yaml(yaml)
+      @document.save!
+
+      @document.choices = {
+        users: true,
+        employees: true,
+        supporters: true,
+      }
+    end
+
+    it "punctuates lists of sub-clauses correctly when all sub-clauses are present" do
+      expect(@document.outline(for_display: true)).to eq([
+        "The Board shall consist of:",
+        [
+          "Users;",
+          "Employees;",
+          "Supporters."
+        ]
+      ])
+    end
+
+    it "punctuates lists of sub-clauses correctly when some sub-clauses are omitted" do
+      @document.choices = {
+        users: true,
+        employees: true,
+        supporters: false
+      }
+
+      expect(@document.outline(for_display: true)).to eq([
+        "The Board shall consist of:",
+        [
+          "Users;",
+          "Employees."
+        ]
+      ])
+    end
+
+    it "punctuates lists correctly when generating HTML" do
+      @document.choices = {
+        users: true,
+        employees: true,
+        supporters: false
+      }
+
+      expected_html = <<-EOF
+      <section>
+        <ol>
+          <li value="1">
+            The Board shall consist of:
+            <ol>
+              <li value="1">Users;</li>
+              <li value="2">Employees.</li>
+            </ol>
+          </li>
+        </ol>
+      </section>
+      EOF
+
+      html = @document.to_html(with_index: false)
+
+      expect(html).to be_equivalent_to(expected_html)
+    end
+  end
+
   describe "topic lookup" do
     it "takes into account the current choices" do
       @document = Rticles::Document.create

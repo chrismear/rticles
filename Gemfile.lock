@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rticles (0.1.0)
+    rticles (0.2.2)
       acts_as_list (>= 0.1.8, < 0.3.0)
       rails (~> 3.2.8)
       roman-numerals (~> 0.3.0)
@@ -68,7 +68,7 @@ GEM
     multi_json (1.8.4)
     nokogiri (1.6.1)
       mini_portile (~> 0.5.0)
-    polyglot (0.3.3)
+    polyglot (0.3.4)
     rack (1.4.5)
     rack-cache (1.2)
       rack (>= 0.4)
